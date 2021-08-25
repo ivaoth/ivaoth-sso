@@ -34,7 +34,7 @@
     "qs": "6.10.1",
     "reflect-metadata": "0.1.13",
     "rimraf": "3.0.2",
-    "rxjs": "6.6.7",
+    "rxjs": "7.3.0",
     "title-case": "3.0.3",
     "typeorm": "0.2.37",
     "uuid": "8.3.2"
