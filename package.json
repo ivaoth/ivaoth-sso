@@ -21,10 +21,10 @@
     "typeorm": "node --require ts-node/register ./node_modules/typeorm/cli.js"
   },
   "dependencies": {
-    "@nestjs/common": "7.6.18",
+    "@nestjs/common": "8.0.6",
     "@nestjs/config": "1.0.1",
-    "@nestjs/core": "7.6.18",
-    "@nestjs/platform-express": "7.6.18",
+    "@nestjs/core": "8.0.6",
+    "@nestjs/platform-express": "8.0.6",
     "@nestjs/typeorm": "7.1.5",
     "axios": "0.21.1",
     "csurf": "1.11.0",
@@ -40,9 +40,9 @@
     "uuid": "8.3.2"
   },
   "devDependencies": {
-    "@nestjs/cli": "7.6.0",
+    "@nestjs/cli": "8.1.1",
     "@nestjs/schematics": "7.3.1",
-    "@nestjs/testing": "7.6.18",
+    "@nestjs/testing": "8.0.6",
     "@types/csurf": "1.11.2",
     "@types/ejs": "3.1.0",
     "@types/express": "4.17.13",
