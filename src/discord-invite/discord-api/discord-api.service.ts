@@ -48,9 +48,11 @@ export class DiscordApiService {
     tempClient.token = access_token;
     // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     return (
-      await ((tempClient as unknown) as {
-        api: { users: { '@me': { get: () => Promise<{ id: string }> } } };
-      }).api.users['@me'].get()
+      await (
+        tempClient as unknown as {
+          api: { users: { '@me': { get: () => Promise<{ id: string }> } } };
+        }
+      ).api.users['@me'].get()
     ).id;
   }
 
@@ -86,7 +88,9 @@ export class DiscordApiService {
     tokenResponse: TokenData,
     user: User
   ): Promise<void> {
-    await (await this.guild).addMember(discordId, {
+    await (
+      await this.guild
+    ).addMember(discordId, {
       accessToken: tokenResponse.access_token,
       nick: this.utils.calculateNickname(user, 'dummy'),
       roles: this.utils.calculateRoles(user)

@@ -12,9 +12,7 @@ export class AppController {
   ) {}
 
   @Get('getUser')
-  async getUser(
-    @Query('discord_id') discord_id: string
-  ): Promise<
+  async getUser(@Query('discord_id') discord_id: string): Promise<
     | {
         success: false;
       }

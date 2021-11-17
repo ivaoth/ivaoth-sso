@@ -23,7 +23,7 @@ export class SubmitConsentController {
       return;
     }
 
-    let user = await this.userRepository.find({
+    const user = await this.userRepository.find({
       where: {
         vid
       }

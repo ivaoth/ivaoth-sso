@@ -6,7 +6,7 @@ describe('SubmitConsentController', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      controllers: [SubmitConsentController],
+      controllers: [SubmitConsentController]
     }).compile();
 
     controller = module.get<SubmitConsentController>(SubmitConsentController);
