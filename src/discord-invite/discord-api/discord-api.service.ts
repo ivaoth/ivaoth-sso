@@ -1,37 +1,35 @@
+import { REST } from '@discordjs/rest';
 import { Inject, Injectable } from '@nestjs/common';
 import axios from 'axios';
+import {
+  RESTGetAPICurrentUserResult,
+  RESTGetAPIGuildMemberResult,
+  RESTGetAPIGuildMembersResult,
+  RESTPatchAPIGuildMemberJSONBody,
+  RESTPostOAuth2AccessTokenURLEncodedData,
+  RESTPutAPIGuildMemberJSONBody,
+  Routes
+} from 'discord-api-types/v9';
 import qs from 'qs';
 import { User } from '../../entities/User';
 import { TokenData } from '../../interfaces';
 import { UtilitiesService } from '../utilities/utilities.service';
-import * as Discord from 'discord.js';
 
 @Injectable()
 export class DiscordApiService {
-  private guild: Promise<Discord.Guild>;
+  private rest: REST;
 
   constructor(
     private utils: UtilitiesService,
     @Inject('DISCORD_CLIENT_ID') private discordClientId: string,
     @Inject('DISCORD_CLIENT_SECRET') private discordClientSecret: string,
     @Inject('DISCORD_CALLBACK_URI') private discordCallbackUri: string,
-    @Inject('DISCORD_GUILD_ID') discordGuildId: string,
+    @Inject('DISCORD_GUILD_ID') private discordGuildId: string,
     @Inject('DISCORD_BOT_TOKEN') discordBotToken: string,
     @Inject('DISCORD_BOT_ROLE') private discordBotRole: string,
     @Inject('DISCORD_MANAGED_ROLES') private discordManagedRoles: string[]
   ) {
-    const client = new Discord.Client({
-      intents: []
-    });
-    void client.login(discordBotToken);
-    const clientReady = new Promise<void>((res) => {
-      client.on('ready', () => {
-        res();
-      });
-    });
-    this.guild = clientReady.then(() => {
-      return Promise.resolve(client.guilds.fetch(discordGuildId));
-    });
+    this.rest = new REST({ version: '9' }).setToken(discordBotToken);
   }
 
   /**
@@ -41,33 +39,25 @@ export class DiscordApiService {
    * @experimental
    */
   async getDiscordUserIdFromAccessToken(
-    token_type: string,
+    token_type: 'Bot' | 'Bearer',
     access_token: string
   ): Promise<string> {
-    const tempClient = new Discord.Client({
-      _tokenType: token_type,
-      intents: []
-    } as Discord.ClientOptions);
-    tempClient.token = access_token;
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+    const tempRest = new REST({ version: '9' }).setToken(access_token);
     return (
-      await (
-        tempClient as unknown as {
-          api: { users: { '@me': { get: () => Promise<{ id: string }> } } };
-        }
-      ).api.users['@me'].get()
+      (await tempRest.get(Routes.user(), {
+        authPrefix: token_type
+      })) as RESTGetAPICurrentUserResult
     ).id;
   }
 
   async getTokens(code: string): Promise<TokenData> {
     const tokenUrl = 'https://discord.com/api/oauth2/token';
-    const tokenData = {
+    const tokenData: RESTPostOAuth2AccessTokenURLEncodedData = {
       client_id: this.discordClientId,
       client_secret: this.discordClientSecret,
       grant_type: 'authorization_code',
       code,
-      redirect_uri: this.discordCallbackUri,
-      scope: 'identify guilds.join'
+      redirect_uri: this.discordCallbackUri
     };
     const tokenResponse = (
       await axios.post<TokenData>(tokenUrl, qs.stringify(tokenData), {
@@ -80,9 +70,12 @@ export class DiscordApiService {
   }
 
   async tryKickUser(user: User): Promise<void> {
-    const member = this.fetchMemberFromUserId(user.discord_id);
-    if (await member) {
-      await (await member).kick();
+    try {
+      await this.rest.delete(
+        Routes.guildMember(this.discordGuildId, user.discord_id)
+      );
+    } catch (e) {
+      return;
     }
   }
 
@@ -91,17 +84,17 @@ export class DiscordApiService {
     tokenResponse: TokenData,
     user: User
   ): Promise<void> {
-    await (
-      await this.guild
-    ).members.add(discordId, {
-      accessToken: tokenResponse.access_token,
-      nick: this.utils.calculateNickname(user, 'dummy'),
-      roles: this.utils.calculateRoles(user)
+    await this.rest.put(Routes.guildMember(this.discordGuildId, discordId), {
+      body: {
+        access_token: tokenResponse.access_token,
+        nick: this.utils.calculateNickname(user, 'dummy'),
+        roles: this.utils.calculateRoles(user)
+      } as RESTPutAPIGuildMemberJSONBody
     });
   }
 
   async fetchMember(discordId: string): Promise<void> {
-    await (await this.guild).members.fetch(discordId);
+    await this.rest.get(Routes.guildMember(this.discordGuildId, discordId));
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -109,46 +102,73 @@ export class DiscordApiService {
     discordUserId: string,
     userData: User | null
   ): Promise<void> {
-    const member = (await this.guild).members.cache.get(discordUserId);
-    if (member.roles.cache.every((r) => r.id !== this.discordBotRole)) {
-      const oldRoles = member.roles.cache.map((r) => r.id);
-      const newRoles = member.roles.cache
-        .filter((r) => !this.discordManagedRoles.includes(r.id))
-        .map((r) => r.id)
+    const member = (await this.rest.get(
+      Routes.guildMember(this.discordGuildId, discordUserId)
+    )) as RESTGetAPIGuildMemberResult;
+    if (member.roles.every((r) => r !== this.discordBotRole)) {
+      const oldRoles = [...member.roles];
+      const newRoles = member.roles
+        .filter((r) => !this.discordManagedRoles.includes(r))
         .concat(this.utils.calculateRoles(userData));
-      if (
-        oldRoles.filter((r) => !newRoles.includes(r)).length > 0 ||
-        newRoles.filter((r) => !oldRoles.includes(r)).length > 0
-      ) {
-        await member.roles.set(newRoles);
+      const toBeRemovedRoles = oldRoles.filter((r) => !newRoles.includes(r));
+      const toBeAddedRoles = newRoles.filter((r) => !oldRoles.includes(r));
+      for (const r of toBeAddedRoles) {
+        await this.rest.put(
+          Routes.guildMemberRole(this.discordGuildId, discordUserId, r)
+        );
+      }
+      for (const r of toBeRemovedRoles) {
+        await this.rest.delete(
+          Routes.guildMemberRole(this.discordGuildId, discordUserId, r)
+        );
       }
       const nickname = this.utils.calculateNickname(
         userData,
         member.user.username
       );
-      if (member.nickname !== nickname) {
-        await member.setNickname(nickname);
+      if (member.nick !== nickname) {
+        await this.rest.patch(
+          Routes.guildMember(this.discordGuildId, discordUserId),
+          {
+            body: {
+              nick: nickname
+            } as RESTPatchAPIGuildMemberJSONBody
+          }
+        );
       }
     }
   }
 
   async getAllMembersId(): Promise<string[]> {
-    return (await (await this.guild).members.fetch()).map((m) => m.user.id);
+    const query = new URLSearchParams();
+    query.set('limit', '1000');
+    const result: string[] = [];
+    let stop = false;
+    let max = '0';
+    do {
+      query.set('after', max);
+      const batch = (await this.rest.get(
+        Routes.guildMembers(this.discordGuildId),
+        {
+          query
+        }
+      )) as RESTGetAPIGuildMembersResult;
+      if (batch.length === 0) {
+        stop = true;
+      } else {
+        result.push(...batch.map((m) => m.user.id));
+        max = batch[batch.length - 1].user.id;
+      }
+    } while (!stop);
+    return result;
   }
 
   async isUserInGuild(discord_id: string): Promise<boolean> {
-    if (await this.fetchMemberFromUserId(discord_id)) {
+    try {
+      await this.rest.get(Routes.guildMember(this.discordGuildId, discord_id));
       return true;
-    } else {
+    } catch (e) {
       return false;
     }
-  }
-
-  private async fetchMemberFromUserId(
-    discord_id: string
-  ): Promise<Discord.GuildMember | null> {
-    return (await this.guild).members
-      .fetch(discord_id)
-      .catch(() => null as null);
   }
 }
