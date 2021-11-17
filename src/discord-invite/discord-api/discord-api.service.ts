@@ -20,7 +20,9 @@ export class DiscordApiService {
     @Inject('DISCORD_BOT_ROLE') private discordBotRole: string,
     @Inject('DISCORD_MANAGED_ROLES') private discordManagedRoles: string[]
   ) {
-    const client = new Discord.Client();
+    const client = new Discord.Client({
+      intents: []
+    });
     void client.login(discordBotToken);
     const clientReady = new Promise<void>((res) => {
       client.on('ready', () => {
@@ -43,7 +45,8 @@ export class DiscordApiService {
     access_token: string
   ): Promise<string> {
     const tempClient = new Discord.Client({
-      _tokenType: token_type
+      _tokenType: token_type,
+      intents: []
     } as Discord.ClientOptions);
     tempClient.token = access_token;
     // eslint-disable-next-line @typescript-eslint/no-unsafe-return
@@ -90,7 +93,7 @@ export class DiscordApiService {
   ): Promise<void> {
     await (
       await this.guild
-    ).addMember(discordId, {
+    ).members.add(discordId, {
       accessToken: tokenResponse.access_token,
       nick: this.utils.calculateNickname(user, 'dummy'),
       roles: this.utils.calculateRoles(user)
