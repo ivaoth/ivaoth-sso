@@ -5,6 +5,8 @@ import { resolve } from 'path';
 import { format, transports } from 'winston';
 import { AppModule } from './app.module';
 
+const timestamp = new Date();
+
 async function bootstrap(): Promise<void> {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
     logger: WinstonModule.createLogger({
@@ -12,7 +14,14 @@ async function bootstrap(): Promise<void> {
       transports: [
         new transports.Console(),
         new transports.File({
-          filename: resolve(__dirname, '..', 'log', 'log.txt')
+          filename: resolve(
+            __dirname,
+            '..',
+            'log',
+            `log-${timestamp.getUTCFullYear()}${
+              timestamp.getUTCMonth() + 1
+            }${timestamp.getUTCDate()}-${timestamp.getUTCHours()}${timestamp.getUTCMinutes()}${timestamp.getUTCSeconds()}.txt`
+          )
         })
       ],
       exitOnError: false
