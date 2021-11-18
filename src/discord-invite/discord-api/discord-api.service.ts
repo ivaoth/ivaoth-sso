@@ -147,9 +147,13 @@ export class DiscordApiService {
   }
 
   async getAllMembersId(): Promise<string[]> {
+    return (await this.getAllMembers()).map((m) => m.user.id);
+  }
+
+  private async getAllMembers(): Promise<RESTGetAPIGuildMembersResult> {
     const query = new URLSearchParams();
     query.set('limit', '1000');
-    const result: string[] = [];
+    const result: RESTGetAPIGuildMembersResult = [];
     let stop = false;
     let max = '0';
     do {
@@ -163,7 +167,7 @@ export class DiscordApiService {
       if (batch.length === 0) {
         stop = true;
       } else {
-        result.push(...batch.map((m) => m.user.id));
+        result.push(...batch);
         max = batch[batch.length - 1].user.id;
       }
     } while (!stop);
