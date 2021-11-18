@@ -19,6 +19,7 @@ import { UtilitiesService } from '../utilities/utilities.service';
 export class DiscordApiService {
   private rest: REST;
   private logger = new Logger(DiscordApiService.name);
+  private cachedAllMembers: RESTGetAPIGuildMembersResult | null = null;
 
   constructor(
     private utils: UtilitiesService,
@@ -101,11 +102,14 @@ export class DiscordApiService {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async updateUser(
     discordUserId: string,
-    userData: User | null
+    userData: User | null,
+    useCachedData = false
   ): Promise<void> {
-    const member = (await this.rest.get(
-      Routes.guildMember(this.discordGuildId, discordUserId)
-    )) as RESTGetAPIGuildMemberResult;
+    const member = useCachedData
+      ? this.cachedAllMembers.find((m) => m.user.id === discordUserId)
+      : ((await this.rest.get(
+          Routes.guildMember(this.discordGuildId, discordUserId)
+        )) as RESTGetAPIGuildMemberResult);
     if (member.roles.every((r) => r !== this.discordBotRole)) {
       const oldRoles = [...member.roles];
       const newRoles = member.roles
@@ -146,32 +150,38 @@ export class DiscordApiService {
     }
   }
 
-  async getAllMembersId(): Promise<string[]> {
-    return (await this.getAllMembers()).map((m) => m.user.id);
+  async getAllMembersId(force = false): Promise<string[]> {
+    return (await this.getAllMembers(force)).map((m) => m.user.id);
   }
 
-  private async getAllMembers(): Promise<RESTGetAPIGuildMembersResult> {
-    const query = new URLSearchParams();
-    query.set('limit', '1000');
-    const result: RESTGetAPIGuildMembersResult = [];
-    let stop = false;
-    let max = '0';
-    do {
-      query.set('after', max);
-      const batch = (await this.rest.get(
-        Routes.guildMembers(this.discordGuildId),
-        {
-          query
+  private async getAllMembers(
+    force = false
+  ): Promise<RESTGetAPIGuildMembersResult> {
+    if (force || this.cachedAllMembers === null) {
+      this.logger.log('Fetching all members of the guild');
+      const query = new URLSearchParams();
+      query.set('limit', '1000');
+      const result: RESTGetAPIGuildMembersResult = [];
+      let stop = false;
+      let max = '0';
+      do {
+        query.set('after', max);
+        const batch = (await this.rest.get(
+          Routes.guildMembers(this.discordGuildId),
+          {
+            query
+          }
+        )) as RESTGetAPIGuildMembersResult;
+        if (batch.length === 0) {
+          stop = true;
+        } else {
+          result.push(...batch);
+          max = batch[batch.length - 1].user.id;
         }
-      )) as RESTGetAPIGuildMembersResult;
-      if (batch.length === 0) {
-        stop = true;
-      } else {
-        result.push(...batch);
-        max = batch[batch.length - 1].user.id;
-      }
-    } while (!stop);
-    return result;
+      } while (!stop);
+      this.cachedAllMembers = result;
+    }
+    return this.cachedAllMembers;
   }
 
   async isUserInGuild(discord_id: string): Promise<boolean> {

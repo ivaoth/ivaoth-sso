@@ -24,13 +24,13 @@ export class UpdateMemberController {
 
   @Post('all')
   async updateAllMembers(): Promise<void> {
-    const membersId = await this.discordApiService.getAllMembersId();
+    const membersId = await this.discordApiService.getAllMembersId(true);
     await Promise.all(
       membersId.map(async (member) => {
         const userData = await this.userRepository.findOne({
           where: { discord_id: member }
         });
-        return await this.discordApiService.updateUser(member, userData);
+        return await this.discordApiService.updateUser(member, userData, true);
       })
     );
   }
