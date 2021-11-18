@@ -1,5 +1,5 @@
 import { REST } from '@discordjs/rest';
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import axios from 'axios';
 import {
   RESTGetAPICurrentUserResult,
@@ -18,6 +18,7 @@ import { UtilitiesService } from '../utilities/utilities.service';
 @Injectable()
 export class DiscordApiService {
   private rest: REST;
+  private logger = new Logger(DiscordApiService.name);
 
   constructor(
     private utils: UtilitiesService,
@@ -127,14 +128,20 @@ export class DiscordApiService {
         member.user.username
       );
       if (member.nick !== nickname) {
-        await this.rest.patch(
-          Routes.guildMember(this.discordGuildId, discordUserId),
-          {
-            body: {
-              nick: nickname
-            } as RESTPatchAPIGuildMemberJSONBody
-          }
-        );
+        try {
+          await this.rest.patch(
+            Routes.guildMember(this.discordGuildId, discordUserId),
+            {
+              body: {
+                nick: nickname
+              } as RESTPatchAPIGuildMemberJSONBody
+            }
+          );
+        } catch (e) {
+          Logger.log(
+            `Cannot change nickname for ${discordUserId} from ${member.nick} to ${nickname}`
+          );
+        }
       }
     }
   }
