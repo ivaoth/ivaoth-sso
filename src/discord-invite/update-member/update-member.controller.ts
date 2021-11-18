@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Logger, Post } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from '../../entities/User';
@@ -6,6 +6,7 @@ import { DiscordApiService } from '../discord-api/discord-api.service';
 
 @Controller('update-member')
 export class UpdateMemberController {
+  private logger: Logger = new Logger(UpdateMemberController.name);
   constructor(
     @InjectRepository(User) private userRepository: Repository<User>,
     private discordApiService: DiscordApiService
@@ -25,6 +26,7 @@ export class UpdateMemberController {
   @Post('all')
   async updateAllMembers(): Promise<void> {
     const membersId = await this.discordApiService.getAllMembersId();
+    this.logger.log(membersId);
     await Promise.all(
       membersId.map(async (member) => {
         const userData = await this.userRepository.findOne({

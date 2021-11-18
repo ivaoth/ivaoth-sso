@@ -1,5 +1,5 @@
 import { REST } from '@discordjs/rest';
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import axios from 'axios';
 import {
   RESTGetAPICurrentUserResult,
@@ -18,6 +18,7 @@ import { UtilitiesService } from '../utilities/utilities.service';
 @Injectable()
 export class DiscordApiService {
   private rest: REST;
+  private logger = new Logger(DiscordApiService.name);
 
   constructor(
     private utils: UtilitiesService,
@@ -105,6 +106,7 @@ export class DiscordApiService {
     const member = (await this.rest.get(
       Routes.guildMember(this.discordGuildId, discordUserId)
     )) as RESTGetAPIGuildMemberResult;
+    Logger.log(`[${discordUserId}] pass1`);
     if (member.roles.every((r) => r !== this.discordBotRole)) {
       const oldRoles = [...member.roles];
       const newRoles = member.roles
@@ -117,11 +119,13 @@ export class DiscordApiService {
           Routes.guildMemberRole(this.discordGuildId, discordUserId, r)
         );
       }
+      Logger.log(`[${discordUserId}] pass2`);
       for (const r of toBeRemovedRoles) {
         await this.rest.delete(
           Routes.guildMemberRole(this.discordGuildId, discordUserId, r)
         );
       }
+      Logger.log(`[${discordUserId}] pass3`);
       const nickname = this.utils.calculateNickname(
         userData,
         member.user.username
@@ -136,6 +140,7 @@ export class DiscordApiService {
           }
         );
       }
+      Logger.log(`[${discordUserId}] pass4`);
     }
   }
 
