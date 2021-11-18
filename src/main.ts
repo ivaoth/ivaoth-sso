@@ -8,7 +8,7 @@ import { AppModule } from './app.module';
 async function bootstrap(): Promise<void> {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
     logger: WinstonModule.createLogger({
-      format: format.timestamp(),
+      format: format.json(),
       transports: [
         new transports.Console(),
         new transports.File({
