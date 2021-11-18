@@ -7,12 +7,21 @@ import { AppModule } from './app.module';
 
 const timestamp = new Date();
 
+const myFormat = format.combine(
+  format.timestamp(),
+  format.printf(
+    (info) => `${info.timestamp as string} [${info.level}] ${info.message}`
+  )
+);
+
 async function bootstrap(): Promise<void> {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
     logger: WinstonModule.createLogger({
-      format: format.json(),
+      format: myFormat,
       transports: [
-        new transports.Console(),
+        new transports.Console({
+          format: format.combine(format.colorize(), myFormat)
+        }),
         new transports.File({
           filename: resolve(
             __dirname,
@@ -20,7 +29,16 @@ async function bootstrap(): Promise<void> {
             'log',
             `log-${timestamp.getUTCFullYear()}${
               timestamp.getUTCMonth() + 1
-            }${timestamp.getUTCDate()}-${timestamp.getUTCHours()}${timestamp.getUTCMinutes()}${timestamp.getUTCSeconds()}.txt`
+            }${timestamp.getUTCDate()}-${timestamp
+              .getUTCHours()
+              .toString()
+              .padStart(2, '0')}${timestamp
+              .getUTCMinutes()
+              .toString()
+              .padStart(2, '0')}${timestamp
+              .getUTCSeconds()
+              .toString()
+              .padStart(2, '0')}.log`
           )
         })
       ],
