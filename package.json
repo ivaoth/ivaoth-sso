@@ -62,7 +62,7 @@
     "eslint-plugin-prettier": "4.0.0",
     "jest": "27.3.1",
     "nodemon": "2.0.15",
-    "postcss": "8.3.11",
+    "postcss": "8.4.1",
     "postcss-cli": "9.0.2",
     "prettier": "2.4.1",
     "supertest": "6.1.6",
