@@ -33,7 +33,7 @@
     "ejs": "3.1.6",
     "mysql2": "2.3.3",
     "nest-winston": "1.6.2",
-    "qs": "6.10.1",
+    "qs": "6.10.2",
     "reflect-metadata": "0.1.13",
     "rimraf": "3.0.2",
     "rxjs": "7.4.0",
