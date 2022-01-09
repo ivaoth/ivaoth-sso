@@ -59,4 +59,13 @@ export class AppController {
       };
     }
   }
+
+  /**
+   * It's ping! I wonder what this do?
+   * @returns pong
+   */
+  @Get('ping')
+  async ping() {
+    return `pong at ${new Date()}`;
+  }
 }
