@@ -70,7 +70,7 @@ export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer): void | MiddlewareConsumer {
     consumer
       .apply(APIKeyMiddleware)
-      .exclude('discord', 'discord-invite', 'discord-callback')
+      .exclude('discord', 'discord-invite', 'discord-callback', 'ping')
       .forRoutes(AppController);
   }
 }
