@@ -40,7 +40,7 @@
     "title-case": "3.0.3",
     "typeorm": "0.2.43",
     "uuid": "8.3.2",
-    "winston": "3.5.1"
+    "winston": "3.6.0"
   },
   "devDependencies": {
     "@nestjs/cli": "8.2.1",
