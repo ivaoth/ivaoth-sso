@@ -18,7 +18,7 @@ export class AppController {
       }
     | ({ success: true } & User)
   > {
-    const user = this.userRepo.findOne({ discord_id });
+    const user = this.userRepo.findOne({ where: { discord_id } });
     if (await user) {
       return {
         success: true,
@@ -48,7 +48,7 @@ export class AppController {
   async isAdmin(
     @Query('discord_id') discord_id: string
   ): Promise<{ isAdmin: boolean }> {
-    const admin = this.adminRepo.findOne({ discord_id });
+    const admin = this.adminRepo.findOne({ where: { discord_id } });
     if (await admin) {
       return {
         isAdmin: true
