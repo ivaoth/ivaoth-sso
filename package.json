@@ -35,7 +35,7 @@
     "nest-winston": "1.7.1",
     "qs": "6.11.0",
     "reflect-metadata": "0.1.13",
-    "rimraf": "3.0.2",
+    "rimraf": "5.0.0",
     "rxjs": "7.5.7",
     "title-case": "3.0.3",
     "typeorm": "0.3.10",
