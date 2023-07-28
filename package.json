@@ -43,7 +43,7 @@
     "winston": "3.10.0"
   },
   "devDependencies": {
-    "@nestjs/cli": "10.1.0",
+    "@nestjs/cli": "10.1.10",
     "@nestjs/schematics": "10.0.1",
     "@nestjs/testing": "10.1.2",
     "@types/csurf": "1.11.2",
