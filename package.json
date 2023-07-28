@@ -32,7 +32,7 @@
     "discord-api-types": "0.37.42",
     "ejs": "3.1.9",
     "mysql2": "3.5.2",
-    "nest-winston": "1.9.2",
+    "nest-winston": "1.9.3",
     "qs": "6.11.2",
     "reflect-metadata": "0.1.13",
     "rimraf": "5.0.1",
