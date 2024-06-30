@@ -39,7 +39,7 @@
     "rxjs": "7.8.1",
     "title-case": "4.1.2",
     "typeorm": "0.3.17",
-    "uuid": "9.0.1",
+    "uuid": "10.0.0",
     "winston": "3.11.0"
   },
   "devDependencies": {
@@ -53,7 +53,7 @@
     "@types/node": "20.8.10",
     "@types/qs": "6.9.9",
     "@types/supertest": "2.0.15",
-    "@types/uuid": "9.0.6",
+    "@types/uuid": "10.0.0",
     "@typescript-eslint/eslint-plugin": "6.10.0",
     "@typescript-eslint/parser": "6.10.0",
     "autoprefixer": "10.4.16",
