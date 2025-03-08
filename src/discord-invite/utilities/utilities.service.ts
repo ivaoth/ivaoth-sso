@@ -107,7 +107,7 @@ export class UtilitiesService {
     const authorizeUrl = new URL('https://discord.com/api/oauth2/authorize');
     authorizeUrl.searchParams.set('response_type', 'code');
     authorizeUrl.searchParams.set('client_id', this.discordClientId);
-    authorizeUrl.searchParams.set('scope', 'identify guilds.join');
+    authorizeUrl.searchParams.set('scope', 'identify guilds.join role_connections.write');
     authorizeUrl.searchParams.set('redirect_uri', this.discordCallbackUri);
     authorizeUrl.searchParams.set('state', key);
     return authorizeUrl.href;
