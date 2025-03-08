@@ -4,6 +4,7 @@
   "description": "",
   "author": "",
   "license": "MIT",
+  "type": "module",
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "nest build",

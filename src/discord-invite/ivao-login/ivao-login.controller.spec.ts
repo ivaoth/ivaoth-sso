@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { IvaoLoginController } from './ivao-login.controller';
+import { IvaoLoginController } from './ivao-login.controller.js';
 
 xdescribe('IvaoLoginController', () => {
   let controller: IvaoLoginController;

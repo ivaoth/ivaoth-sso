@@ -1,5 +1,5 @@
-import { Column, Entity, Index, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
-import { User } from './User';
+import { Column, Entity, Index, JoinColumn, ManyToOne, PrimaryGeneratedColumn, Relation } from 'typeorm';
+import { User } from './User.js';
 
 @Entity('oauth_state')
 export class OAuthState {
@@ -14,5 +14,5 @@ export class OAuthState {
   @JoinColumn({
     name: 'userId'
   })
-  user!: User;
+  user!: Relation<User>;
 }

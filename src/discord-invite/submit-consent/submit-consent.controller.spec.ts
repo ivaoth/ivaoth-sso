@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { SubmitConsentController } from './submit-consent.controller';
+import { SubmitConsentController } from './submit-consent.controller.js';
 
 describe('SubmitConsentController', () => {
   let controller: SubmitConsentController;

@@ -11,9 +11,9 @@ import {
   Routes
 } from 'discord-api-types/v10';
 import qs from 'qs';
-import { User } from '../../entities/User';
+import { User } from '../../entities/User.js';
 import { TokenData } from '../../interfaces';
-import { UtilitiesService } from '../utilities/utilities.service';
+import { UtilitiesService } from '../utilities/utilities.service.js';
 
 @Injectable()
 export class DiscordApiService {

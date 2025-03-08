@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { DiscordOauthCallbackController } from './discord-oauth-callback.controller';
+import { DiscordOauthCallbackController } from './discord-oauth-callback.controller.js';
 
 xdescribe('DiscordOauthCallbackController', () => {
   let controller: DiscordOauthCallbackController;

@@ -1,15 +1,15 @@
 import { DynamicModule, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { OAuthState } from '../entities/OAuthState';
-import { User } from '../entities/User';
-import { IvaoLoginController } from './ivao-login/ivao-login.controller';
-import { DiscordOauthCallbackController } from './discord-oauth-callback/discord-oauth-callback.controller';
-import { DiscordApiService } from './discord-api/discord-api.service';
-import { UtilitiesService } from './utilities/utilities.service';
-import { UpdateMemberController } from './update-member/update-member.controller';
-import { NicknameUpdateController } from './nickname-update/nickname-update.controller';
-import { SubmitConsentController } from './submit-consent/submit-consent.controller';
-import { InteractionController } from './interaction/interaction.controller';
+import { OAuthState } from '../entities/OAuthState.js';
+import { User } from '../entities/User.js';
+import { IvaoLoginController } from './ivao-login/ivao-login.controller.js';
+import { DiscordOauthCallbackController } from './discord-oauth-callback/discord-oauth-callback.controller.js';
+import { DiscordApiService } from './discord-api/discord-api.service.js';
+import { UtilitiesService } from './utilities/utilities.service.js';
+import { UpdateMemberController } from './update-member/update-member.controller.js';
+import { NicknameUpdateController } from './nickname-update/nickname-update.controller.js';
+import { SubmitConsentController } from './submit-consent/submit-consent.controller.js';
+import { InteractionController } from './interaction/interaction.controller.js';
 
 interface DiscordInviteModuleConfig {
   discordClientId: string;

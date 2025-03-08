@@ -3,8 +3,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { titleCase } from 'title-case';
 import { Repository } from 'typeorm';
 import { v4 as uuidv4 } from 'uuid';
-import { OAuthState } from '../../entities/OAuthState';
-import { User } from '../../entities/User';
+import { OAuthState } from '../../entities/OAuthState.js';
+import { User } from '../../entities/User.js';
 
 @Injectable()
 export class UtilitiesService {

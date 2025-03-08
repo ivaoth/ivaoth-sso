@@ -1,5 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
-import { OAuthState } from './OAuthState';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany, Relation } from 'typeorm';
+import { OAuthState } from './OAuthState.js';
 
 @Entity('user')
 export class User {
@@ -45,5 +45,5 @@ export class User {
   consentTime!: Date | null;
 
   @OneToMany(() => OAuthState, (state) => state.user)
-  oauthStates!: OAuthState[];
+  oauthStates!: Relation<OAuthState>[];
 }

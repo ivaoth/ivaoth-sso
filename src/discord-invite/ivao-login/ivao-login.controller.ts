@@ -3,10 +3,10 @@ import { InjectRepository } from '@nestjs/typeorm';
 import axios from 'axios';
 import { Response } from 'express';
 import { Repository } from 'typeorm';
-import { OAuthState } from '../../entities/OAuthState';
-import { User } from '../../entities/User';
+import { OAuthState } from '../../entities/OAuthState.js';
+import { User } from '../../entities/User.js';
 import { UserData } from '../../interfaces';
-import { UtilitiesService } from '../utilities/utilities.service';
+import { UtilitiesService } from '../utilities/utilities.service.js';
 
 @Controller('discord-invite')
 export class IvaoLoginController {

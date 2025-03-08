@@ -2,8 +2,8 @@ import { Body, Controller, Post, Res } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Response } from 'express';
 import { Repository } from 'typeorm';
-import { User } from '../../entities/User';
-import { UtilitiesService } from '../utilities/utilities.service';
+import { User } from '../../entities/User.js';
+import { UtilitiesService } from '../utilities/utilities.service.js';
 
 @Controller('submit-consent')
 export class SubmitConsentController {

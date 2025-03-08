@@ -3,7 +3,7 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 import { WinstonModule } from 'nest-winston';
 import { resolve } from 'path';
 import { format, transports } from 'winston';
-import { AppModule } from './app.module';
+import { AppModule } from './app.module.js';
 
 const timestamp = new Date();
 
@@ -22,7 +22,7 @@ async function bootstrap(): Promise<void> {
         }),
         new transports.File({
           filename: resolve(
-            __dirname,
+            import.meta.dirname,
             '..',
             'log',
             `log-${timestamp.getUTCFullYear().toString()}${(
@@ -41,8 +41,8 @@ async function bootstrap(): Promise<void> {
     }),
     rawBody: true
   });
-  app.useStaticAssets(resolve(__dirname, '..', 'public'));
-  app.setBaseViewsDir(resolve(__dirname, 'views'));
+  app.useStaticAssets(resolve(import.meta.dirname, '..', 'public'));
+  app.setBaseViewsDir(resolve(import.meta.dirname, 'views'));
   app.setViewEngine('ejs');
   await app.listen(process.env.PORT || 3000);
 }

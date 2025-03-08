@@ -16,7 +16,7 @@ import {
   MessageFlags
 } from 'discord-api-types/v10';
 import { Request as ExpressRequest } from 'express';
-import { crypto_sign_verify_detached } from 'libsodium-wrappers';
+import libsodium from 'libsodium-wrappers';
 
 @Controller('discord/interaction')
 export class InteractionController {
@@ -29,7 +29,7 @@ export class InteractionController {
     @Inject('DISCORD_BOT_PUBLIC_KEY') publicKey: string
   ): APIInteractionResponse {
     if (
-      crypto_sign_verify_detached(
+      libsodium.crypto_sign_verify_detached(
         Buffer.from(signature, 'utf8'),
         Buffer.concat([Buffer.from(timestamp, 'utf8'), request.rawBody || Buffer.from([])]),
         Buffer.from(publicKey, 'utf8')

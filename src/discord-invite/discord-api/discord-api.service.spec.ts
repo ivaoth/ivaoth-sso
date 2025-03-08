@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { DiscordApiService } from './discord-api.service';
+import { DiscordApiService } from './discord-api.service.js';
 
 xdescribe('DiscordApiService', () => {
   let service: DiscordApiService;

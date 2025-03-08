@@ -1,9 +1,9 @@
 import { Controller, Get, Query } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { OAuthState } from '../../entities/OAuthState';
-import { User } from '../../entities/User';
-import { DiscordApiService } from '../discord-api/discord-api.service';
+import { OAuthState } from '../../entities/OAuthState.js';
+import { User } from '../../entities/User.js';
+import { DiscordApiService } from '../discord-api/discord-api.service.js';
 
 @Controller('discord-oauth-callback')
 export class DiscordOauthCallbackController {

@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { UpdateMemberController } from './update-member.controller';
+import { UpdateMemberController } from './update-member.controller.js';
 
 xdescribe('UpdateMemberController', () => {
   let controller: UpdateMemberController;

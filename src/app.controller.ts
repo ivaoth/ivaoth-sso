@@ -1,8 +1,8 @@
 import { Controller, Get, Query } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Admin } from './entities/Admin';
-import { User } from './entities/User';
+import { Admin } from './entities/Admin.js';
+import { User } from './entities/User.js';
 
 @Controller()
 export class AppController {

@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { UtilitiesService } from './utilities.service';
+import { UtilitiesService } from './utilities.service.js';
 
 xdescribe('UtilitiesService', () => {
   let service: UtilitiesService;
