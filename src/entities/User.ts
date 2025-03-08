@@ -21,11 +21,17 @@ export class User {
   @Column()
   rating!: number;
 
-  @Column()
-  ratingatc!: number;
+  @Column({
+    nullable: true,
+    type: 'int'
+  })
+  ratingatc!: number | null;
 
-  @Column()
-  ratingpilot!: number;
+  @Column({
+    nullable: true,
+    type: 'int'
+  })
+  ratingpilot!: number | null;
 
   @Column()
   division!: string;
@@ -33,14 +39,21 @@ export class User {
   @Column()
   country!: string;
 
-  @Column()
-  staff!: string;
-
-  @Column()
-  customNickname!: string;
+  @Column({
+    nullable: true,
+    type: 'text'
+  })
+  staff!: string | null;
 
   @Column({
-    nullable: true
+    nullable: true,
+    type: 'text'
+  })
+  customNickname!: string | null;
+
+  @Column({
+    nullable: true,
+    type: 'datetime'
   })
   consentTime!: Date | null;
 
