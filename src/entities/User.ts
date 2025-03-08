@@ -39,8 +39,10 @@ export class User {
   @Column()
   customNickname: string;
 
-  @Column()
-  consentTime: Date;
+  @Column({
+    nullable: true
+  })
+  consentTime: Date | null;
 
   @OneToMany(() => OAuthState, (state) => state.user)
   oauthStates: OAuthState[];
