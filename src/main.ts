@@ -10,7 +10,8 @@ const timestamp = new Date();
 const myFormat = format.combine(
   format.timestamp(),
   format.printf(
-    (info) => `${info.timestamp as string} [${info.level}] ${info.message}`
+    (info) =>
+      `${info.timestamp as string} [${info.level}] ${info.message as string}`
   )
 );
 
@@ -27,9 +28,9 @@ async function bootstrap(): Promise<void> {
             __dirname,
             '..',
             'log',
-            `log-${timestamp.getUTCFullYear()}${
+            `log-${timestamp.getUTCFullYear().toString()}${(
               timestamp.getUTCMonth() + 1
-            }${timestamp.getUTCDate()}-${timestamp
+            ).toString()}${timestamp.getUTCDate().toString()}-${timestamp
               .getUTCHours()
               .toString()
               .padStart(2, '0')}${timestamp
@@ -48,6 +49,7 @@ async function bootstrap(): Promise<void> {
   app.useStaticAssets(resolve(__dirname, '..', 'public'));
   app.setBaseViewsDir(resolve(__dirname, 'views'));
   app.setViewEngine('ejs');
-  await app.listen(process.env.PORT);
+  await app.listen(process.env.PORT || 3000);
 }
+
 void bootstrap();
