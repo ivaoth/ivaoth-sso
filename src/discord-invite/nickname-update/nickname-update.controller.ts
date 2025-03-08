@@ -9,7 +9,7 @@ export class NicknameUpdateController {
   constructor(
     @InjectRepository(User) private userRepo: Repository<User>,
     private discordApiService: DiscordApiService
-  ) { }
+  ) {}
 
   /**
    * (General) This update user's nickname in the server and trigger the bot to update the name.
@@ -21,12 +21,14 @@ export class NicknameUpdateController {
     @Body('discord_id') discord_id: string,
     @Body('nickname') nickname: string
   ): Promise<{ success: boolean }> {
-    const user = this.userRepo.findOne({ where: { discord_id } });
-    (await user).customNickname = nickname;
-    void this.userRepo.save(await user);
-    await this.discordApiService.updateUser(discord_id, await user);
-    return {
-      success: true
-    };
+    const user = await this.userRepo.findOne({ where: { discord_id } });
+    if (user) {
+      user.customNickname = nickname;
+      void this.userRepo.save(user);
+      await this.discordApiService.updateUser(discord_id, user);
+      return { success: true };
+    } else {
+      return { success: false };
+    }
   }
 }
