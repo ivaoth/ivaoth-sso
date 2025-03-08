@@ -26,15 +26,9 @@ export class IvaoLoginController {
   async discordInvite(
     @Query('IVAOTOKEN') ivaoToken: string,
     @Res() res: Response
-  ): Promise<{
-    url: string;
-    statusCode: number;
-  }> {
+  ): Promise<void> {
     if (ivaoToken === 'error') {
-      return {
-        url: 'https://ivao.aero',
-        statusCode: 302
-      };
+      res.redirect(302, 'https://ivao.aero');
     } else {
       const ivaoApi = `https://login.ivao.aero/api.php?type=json&token=${ivaoToken}`;
       const userData = (await axios.get<UserData>(ivaoApi)).data;
