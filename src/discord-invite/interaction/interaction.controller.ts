@@ -20,19 +20,20 @@ import libsodium from 'libsodium-wrappers';
 
 @Controller('discord/interaction')
 export class InteractionController {
+  constructor(@Inject('DISCORD_BOT_PUBLIC_KEY') private publicKey: string) {}
+
   @Post()
   receiveInteraction(
     @Body() interaction: APIInteraction,
     @Request() request: RawBodyRequest<ExpressRequest>,
     @Headers('X-Signature-Ed25519') signature: string,
-    @Headers('X-Signature-Timestamp') timestamp: string,
-    @Inject('DISCORD_BOT_PUBLIC_KEY') publicKey: string
+    @Headers('X-Signature-Timestamp') timestamp: string
   ): APIInteractionResponse {
     if (
       libsodium.crypto_sign_verify_detached(
         Buffer.from(signature, 'utf8'),
         Buffer.concat([Buffer.from(timestamp, 'utf8'), request.rawBody || Buffer.from([])]),
-        Buffer.from(publicKey, 'utf8')
+        Buffer.from(this.publicKey, 'utf8')
       )
     ) {
       if (interaction.type === InteractionType.Ping) {
