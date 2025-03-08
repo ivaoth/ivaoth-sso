@@ -29,6 +29,7 @@ interface DiscordInviteModuleConfig {
   discordUnverifiedUserRole: string;
   discordUnconsentedRole: string;
   discordManagedRoles: string[];
+  discordBotPublicKey: string;
 }
 
 @Module({
@@ -98,6 +99,10 @@ export class DiscordInviteModule {
         {
           provide: 'DISCORD_MANAGED_ROLES',
           useValue: config.discordManagedRoles
+        },
+        {
+          provide: 'DISCORD_BOT_PUBLIC_KEY',
+          useValue: config.discordBotPublicKey
         }
       ]
     };
@@ -121,6 +126,7 @@ export class DiscordInviteModule {
     const discordUnverifiedUserRole = process.env['DISCORD_UNVERIFIED_USER_ROLE'];
     const discordUnconsentedRole = process.env['DISCORD_UNCONSENTED_ROLE'];
     const discordManagedRoles = process.env['DISCORD_MANAGED_ROLES'];
+    const discordBotPublicKey = process.env['DISCORD_BOT_PUBLIC_KEY'];
     if (
       discordClientId &&
       discordClientSecret &&
@@ -138,7 +144,8 @@ export class DiscordInviteModule {
       discordBotRole &&
       discordUnverifiedUserRole &&
       discordUnconsentedRole &&
-      discordManagedRoles
+      discordManagedRoles &&
+      discordBotPublicKey
     )
       return {
         discordClientId,
@@ -157,7 +164,8 @@ export class DiscordInviteModule {
         discordBotRole,
         discordUnverifiedUserRole,
         discordUnconsentedRole,
-        discordManagedRoles: discordManagedRoles.split(':')
+        discordManagedRoles: discordManagedRoles.split(':'),
+        discordBotPublicKey
       };
     else throw new Error('Misconfigured environment');
   }
