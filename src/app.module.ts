@@ -15,6 +15,8 @@ import { CreateAdminTable1588883056001 } from './migrations/1588883056001-Create
 import { CreateOAuthStateTable1605167513355 } from './migrations/1605167513355-CreateOAuthStateTable.js';
 import { RemoveAuthRequest1608128480347 } from './migrations/1608128480347-RemoveAuthRequest.js';
 import { AddConsentTime1621007020175 } from './migrations/1621007020175-AddConsentTime.js';
+import { DiscordToken } from './entities/DiscordToken.js';
+import { CreateDiscordToken1741475841953 } from './migrations/1741475841953-CreateDiscordToken.js';
 
 @Module({
   imports: [
@@ -26,7 +28,7 @@ import { AddConsentTime1621007020175 } from './migrations/1621007020175-AddConse
       username: process.env['DB_USERNAME'],
       password: process.env['DB_PASSWORD'],
       database: process.env['DB_NAME'],
-      entities: [User, Admin, OAuthState],
+      entities: [User, Admin, OAuthState, DiscordToken],
       migrations: [
         CreateAuthRequestTable1557146563440,
         CreateUserTable1557153360741,
@@ -34,7 +36,8 @@ import { AddConsentTime1621007020175 } from './migrations/1621007020175-AddConse
         CreateAdminTable1588883056001,
         CreateOAuthStateTable1605167513355,
         RemoveAuthRequest1608128480347,
-        AddConsentTime1621007020175
+        AddConsentTime1621007020175,
+        CreateDiscordToken1741475841953
       ],
       migrationsRun: true
     }),

@@ -1,5 +1,6 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany, Relation } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany, Relation, OneToOne } from 'typeorm';
 import { OAuthState } from './OAuthState.js';
+import { DiscordToken } from './DiscordToken.js';
 
 @Entity('user')
 export class User {
@@ -59,4 +60,7 @@ export class User {
 
   @OneToMany(() => OAuthState, (state) => state.user)
   oauthStates!: Relation<OAuthState>[];
+
+  @OneToOne(() => DiscordToken, (token) => token.user)
+  discordToken!: Relation<DiscordToken>;
 }
