@@ -18,9 +18,7 @@ import { AddConsentTime1621007020175 } from './migrations/1621007020175-AddConse
 
 @Module({
   imports: [
-    ConfigModule.forRoot({
-      envFilePath: [resolve(__dirname, '..', '.env')]
-    }),
+    ConfigModule.forRoot({ envFilePath: [resolve(__dirname, '..', '.env')] }),
     TypeOrmModule.forRoot({
       type: 'mariadb',
       timezone: 'Z',
