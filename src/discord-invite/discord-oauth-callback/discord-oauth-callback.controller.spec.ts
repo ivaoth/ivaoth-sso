@@ -9,9 +9,7 @@ xdescribe('DiscordOauthCallbackController', () => {
       controllers: [DiscordOauthCallbackController]
     }).compile();
 
-    controller = module.get<DiscordOauthCallbackController>(
-      DiscordOauthCallbackController
-    );
+    controller = module.get<DiscordOauthCallbackController>(DiscordOauthCallbackController);
   });
 
   it('should be defined', () => {

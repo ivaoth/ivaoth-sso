@@ -12,9 +12,7 @@ export class AppController {
   ) {}
 
   @Get('getUser')
-  async getUser(
-    @Query('discord_id') discord_id: string
-  ): Promise<{ success: false } | { success: true; user: User }> {
+  async getUser(@Query('discord_id') discord_id: string): Promise<{ success: false } | { success: true; user: User }> {
     const user = await this.userRepo.findOne({ where: { discord_id } });
     if (user) {
       return { success: true, user };
@@ -37,9 +35,7 @@ export class AppController {
    * @param discord_id The Discord user
    */
   @Get('isAdmin')
-  async isAdmin(
-    @Query('discord_id') discord_id: string
-  ): Promise<{ isAdmin: boolean }> {
+  async isAdmin(@Query('discord_id') discord_id: string): Promise<{ isAdmin: boolean }> {
     const admin = this.adminRepo.findOne({ where: { discord_id } });
     if (await admin) {
       return { isAdmin: true };

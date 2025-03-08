@@ -9,10 +9,7 @@ const timestamp = new Date();
 
 const myFormat = format.combine(
   format.timestamp(),
-  format.printf(
-    (info) =>
-      `${info.timestamp as string} [${info.level}] ${info.message as string}`
-  )
+  format.printf((info) => `${info.timestamp as string} [${info.level}] ${info.message as string}`)
 );
 
 async function bootstrap(): Promise<void> {
@@ -33,10 +30,7 @@ async function bootstrap(): Promise<void> {
             ).toString()}${timestamp.getUTCDate().toString()}-${timestamp
               .getUTCHours()
               .toString()
-              .padStart(2, '0')}${timestamp
-              .getUTCMinutes()
-              .toString()
-              .padStart(2, '0')}${timestamp
+              .padStart(2, '0')}${timestamp.getUTCMinutes().toString().padStart(2, '0')}${timestamp
               .getUTCSeconds()
               .toString()
               .padStart(2, '0')}.log`

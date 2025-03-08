@@ -10,17 +10,13 @@ describe('AppController (e2e)', () => {
       imports: [AppModule]
     }).compile();
 
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     app = moduleFixture.createNestApplication();
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+
     await app.init();
   });
 
   it('/ (GET)', () => {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
-    return request(app.getHttpServer())
-      .get('/')
-      .expect(200)
-      .expect('Hello World!');
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+    return request(app.getHttpServer()).get('/').expect(200).expect('Hello World!');
   });
 });

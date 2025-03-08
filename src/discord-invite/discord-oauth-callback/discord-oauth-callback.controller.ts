@@ -20,10 +20,7 @@ export class DiscordOauthCallbackController {
    * @param state The state that we sent with OAuth request.
    */
   @Get()
-  async discordCallback(
-    @Query('code') code: string,
-    @Query('state') state: string
-  ): Promise<string> {
+  async discordCallback(@Query('code') code: string, @Query('state') state: string): Promise<string> {
     const oauthState = await this.oauthStateRepository.findOne({
       where: { state },
       relations: ['user']

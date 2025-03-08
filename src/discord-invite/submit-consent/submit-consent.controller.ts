@@ -14,11 +14,7 @@ export class SubmitConsentController {
   ) {}
 
   @Post()
-  async submitConsent(
-    @Body('consent') consent: string,
-    @Body('_token') vid: string,
-    @Res() res: Response
-  ) {
+  async submitConsent(@Body('consent') consent: string, @Body('_token') vid: string, @Res() res: Response) {
     if (consent !== 'consent') {
       return;
     }

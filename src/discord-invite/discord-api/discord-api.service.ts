@@ -40,10 +40,7 @@ export class DiscordApiService {
    * @param access_token Access token
    * @experimental
    */
-  async getDiscordUserIdFromAccessToken(
-    token_type: 'Bot' | 'Bearer',
-    access_token: string
-  ): Promise<string> {
+  async getDiscordUserIdFromAccessToken(token_type: 'Bot' | 'Bearer', access_token: string): Promise<string> {
     const tempRest = new REST({ version: '9' }).setToken(access_token);
     return (
       (await tempRest.get(Routes.user(), {
@@ -73,19 +70,13 @@ export class DiscordApiService {
 
   async tryKickUser(user: User): Promise<void> {
     try {
-      await this.rest.delete(
-        Routes.guildMember(this.discordGuildId, user.discord_id)
-      );
+      await this.rest.delete(Routes.guildMember(this.discordGuildId, user.discord_id));
     } catch (e) {
       return;
     }
   }
 
-  async joinUserToGuild(
-    discordId: string,
-    tokenResponse: TokenData,
-    user: User
-  ): Promise<void> {
+  async joinUserToGuild(discordId: string, tokenResponse: TokenData, user: User): Promise<void> {
     await this.rest.put(Routes.guildMember(this.discordGuildId, discordId), {
       body: {
         access_token: tokenResponse.access_token,
@@ -99,16 +90,10 @@ export class DiscordApiService {
     await this.rest.get(Routes.guildMember(this.discordGuildId, discordId));
   }
 
-  async updateUser(
-    discordUserId: string,
-    userData: User | null,
-    useCachedData = false
-  ): Promise<void> {
+  async updateUser(discordUserId: string, userData: User | null, useCachedData = false): Promise<void> {
     const member = useCachedData
       ? this.cachedAllMembers.find((m) => m.user.id === discordUserId)
-      : ((await this.rest.get(
-          Routes.guildMember(this.discordGuildId, discordUserId)
-        )) as RESTGetAPIGuildMemberResult);
+      : ((await this.rest.get(Routes.guildMember(this.discordGuildId, discordUserId))) as RESTGetAPIGuildMemberResult);
     if (member && member.roles.every((r) => r !== this.discordBotRole)) {
       const oldRoles = [...member.roles];
       const newRoles = member.roles
@@ -117,29 +102,19 @@ export class DiscordApiService {
       const toBeRemovedRoles = oldRoles.filter((r) => !newRoles.includes(r));
       const toBeAddedRoles = newRoles.filter((r) => !oldRoles.includes(r));
       for (const r of toBeAddedRoles) {
-        await this.rest.put(
-          Routes.guildMemberRole(this.discordGuildId, discordUserId, r)
-        );
+        await this.rest.put(Routes.guildMemberRole(this.discordGuildId, discordUserId, r));
       }
       for (const r of toBeRemovedRoles) {
-        await this.rest.delete(
-          Routes.guildMemberRole(this.discordGuildId, discordUserId, r)
-        );
+        await this.rest.delete(Routes.guildMemberRole(this.discordGuildId, discordUserId, r));
       }
-      const nickname = this.utils.calculateNickname(
-        userData,
-        member.user.username
-      );
+      const nickname = this.utils.calculateNickname(userData, member.user.username);
       if (member.nick !== nickname) {
         try {
-          await this.rest.patch(
-            Routes.guildMember(this.discordGuildId, discordUserId),
-            { body: { nick: nickname } as RESTPatchAPIGuildMemberJSONBody }
-          );
+          await this.rest.patch(Routes.guildMember(this.discordGuildId, discordUserId), {
+            body: { nick: nickname } as RESTPatchAPIGuildMemberJSONBody
+          });
         } catch (e) {
-          Logger.log(
-            `Cannot change nickname for ${discordUserId} from ${member.nick || ''} to ${nickname}`
-          );
+          Logger.log(`Cannot change nickname for ${discordUserId} from ${member.nick || ''} to ${nickname}`);
         }
       }
     }
@@ -149,9 +124,7 @@ export class DiscordApiService {
     return (await this.getAllMembers(force)).map((m) => m.user.id);
   }
 
-  private async getAllMembers(
-    force = false
-  ): Promise<RESTGetAPIGuildMembersResult> {
+  private async getAllMembers(force = false): Promise<RESTGetAPIGuildMembersResult> {
     if (force || this.cachedAllMembers.length === 0) {
       this.logger.log('Fetching all members of the guild');
       const query = new URLSearchParams();
@@ -161,10 +134,9 @@ export class DiscordApiService {
       let max = '0';
       do {
         query.set('after', max);
-        const batch = (await this.rest.get(
-          Routes.guildMembers(this.discordGuildId),
-          { query }
-        )) as RESTGetAPIGuildMembersResult;
+        const batch = (await this.rest.get(Routes.guildMembers(this.discordGuildId), {
+          query
+        })) as RESTGetAPIGuildMembersResult;
         if (batch.length === 0) {
           stop = true;
         } else {

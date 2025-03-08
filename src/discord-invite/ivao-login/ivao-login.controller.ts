@@ -23,10 +23,7 @@ export class IvaoLoginController {
    * @param ivaoToken The token from IVAO Login API
    */
   @Get()
-  async discordInvite(
-    @Query('IVAOTOKEN') ivaoToken: string,
-    @Res() res: Response
-  ): Promise<void> {
+  async discordInvite(@Query('IVAOTOKEN') ivaoToken: string, @Res() res: Response): Promise<void> {
     if (ivaoToken === 'error') {
       res.redirect(302, 'https://ivao.aero');
     } else {

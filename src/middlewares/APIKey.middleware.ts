@@ -16,8 +16,7 @@ export class APIKeyMiddleware implements NestMiddleware<Request, Response> {
     next: () => void
   ): void {
     if (
-      (req.method.toUpperCase() === 'GET' &&
-        req.query['apiKey'] === process.env['API_KEY']) ||
+      (req.method.toUpperCase() === 'GET' && req.query['apiKey'] === process.env['API_KEY']) ||
       req.body['apiKey'] === process.env['API_KEY']
     ) {
       next();

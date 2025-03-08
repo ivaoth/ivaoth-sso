@@ -47,10 +47,7 @@ export class UtilitiesService {
           for (const position of positions) {
             if (position.includes('-')) {
               const firstPart = position.split('-')[0];
-              if (
-                firstPart === this.thisDivision ||
-                this.thisDivisionFirs.includes(firstPart)
-              ) {
+              if (firstPart === this.thisDivision || this.thisDivisionFirs.includes(firstPart)) {
                 roles.add(this.discordThisDivisionStaffRole);
               } else {
                 roles.add(this.discordOtherDivisionStaffRole);
@@ -81,23 +78,17 @@ export class UtilitiesService {
               })
               .filter((s) => {
                 const firstPart = s.split('-')[0];
-                return (
-                  firstPart === this.thisDivision ||
-                  this.thisDivisionFirs.includes(firstPart)
-                );
+                return firstPart === this.thisDivision || this.thisDivisionFirs.includes(firstPart);
               })
           : [];
-        const prefix =
-          eligiblePositions.length > 0
-            ? `${eligiblePositions.join('/')} `
-            : `${user.vid} `;
+        const prefix = eligiblePositions.length > 0 ? `${eligiblePositions.join('/')} ` : `${user.vid} `;
 
-        const suffix =
-          user.division === this.thisDivision ? '' : ` - ${user.division}`;
+        const suffix = user.division === this.thisDivision ? '' : ` - ${user.division}`;
 
-        const baseName = (
-          user.customNickname ? user.customNickname : titleCase(user.firstname)
-        ).substring(0, 32 - prefix.length - suffix.length);
+        const baseName = (user.customNickname ? user.customNickname : titleCase(user.firstname)).substring(
+          0,
+          32 - prefix.length - suffix.length
+        );
         return prefix + baseName + suffix;
       } else {
         return `[UNCONSENTED] ${discordUsername}`.substring(0, 32);

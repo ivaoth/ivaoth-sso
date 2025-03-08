@@ -109,17 +109,14 @@ export class DiscordInviteModule {
     const discordGuildId = process.env['DISCORD_GUILD_ID'];
     const discordHQStaffRole = process.env['DISCORD_HQ_STAFF_ROLE'];
     const discordOtherDivisionRole = process.env['DISCORD_OTHER_DIVISION_ROLE'];
-    const discordOtherDivisionStaffRole =
-      process.env['DISCORD_OTHER_DIVISION_STAFF_ROLE'];
+    const discordOtherDivisionStaffRole = process.env['DISCORD_OTHER_DIVISION_STAFF_ROLE'];
     const discordThisDivisionRole = process.env['DISCORD_THIS_DIVISION_ROLE'];
-    const discordThisDivisionStaffRole =
-      process.env['DISCORD_THIS_DIVISION_STAFF_ROLE'];
+    const discordThisDivisionStaffRole = process.env['DISCORD_THIS_DIVISION_STAFF_ROLE'];
     const discordVerifiedUserRole = process.env['DISCORD_VERIFIED_USER_ROLE'];
     const thisDivision = process.env['THIS_DIVISION'];
     const thisDivisionFirs = process.env['THIS_DIVISION_FIRS'];
     const discordBotRole = process.env['DISCORD_BOT_ROLE'];
-    const discordUnverifiedUserRole =
-      process.env['DISCORD_UNVERIFIED_USER_ROLE'];
+    const discordUnverifiedUserRole = process.env['DISCORD_UNVERIFIED_USER_ROLE'];
     const discordUnconsentedRole = process.env['DISCORD_UNCONSENTED_ROLE'];
     const discordManagedRoles = process.env['DISCORD_MANAGED_ROLES'];
     if (

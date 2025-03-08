@@ -12,9 +12,7 @@ export class UpdateMemberController {
   ) {}
 
   @Post()
-  async updateMember(
-    @Body('discord_user_id') discordUserId: string
-  ): Promise<void> {
+  async updateMember(@Body('discord_user_id') discordUserId: string): Promise<void> {
     await this.discordApiService.fetchMember(discordUserId);
     const user = await this.userRepository.findOne({
       where: { discord_id: discordUserId }
