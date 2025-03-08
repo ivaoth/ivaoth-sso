@@ -9,7 +9,7 @@ import {
   RESTPostOAuth2AccessTokenURLEncodedData,
   RESTPutAPIGuildMemberJSONBody,
   Routes
-} from 'discord-api-types/v9';
+} from 'discord-api-types/v10';
 import qs from 'qs';
 import { User } from '../../entities/User';
 import { TokenData } from '../../interfaces';
@@ -31,7 +31,7 @@ export class DiscordApiService {
     @Inject('DISCORD_BOT_ROLE') private discordBotRole: string,
     @Inject('DISCORD_MANAGED_ROLES') private discordManagedRoles: string[]
   ) {
-    this.rest = new REST({ version: '9' }).setToken(discordBotToken);
+    this.rest = new REST({ version: '10' }).setToken(discordBotToken);
   }
 
   /**
