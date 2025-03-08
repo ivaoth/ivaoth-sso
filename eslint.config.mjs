@@ -16,6 +16,14 @@ export default tseslint.config(
         },
         tsconfigRootDir: import.meta.dirname
       }
+    },
+    rules: {
+      '@typescript-eslint/no-extraneous-class': [
+        'error',
+        {
+          allowWithDecorator: true
+        }
+      ]
     }
   },
   eslintPluginPrettier
