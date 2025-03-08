@@ -7,7 +7,13 @@ export class DiscordToken {
   id!: number;
 
   @Column()
-  token!: string;
+  access_token!: string;
+
+  @Column()
+  refresh_token!: string;
+
+  @Column()
+  expires_at!: Date;
 
   @OneToOne(() => User, (user) => user.discordToken)
   @JoinColumn({ name: 'userId' })

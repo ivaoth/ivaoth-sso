@@ -17,6 +17,7 @@ import { RemoveAuthRequest1608128480347 } from './migrations/1608128480347-Remov
 import { AddConsentTime1621007020175 } from './migrations/1621007020175-AddConsentTime.js';
 import { DiscordToken } from './entities/DiscordToken.js';
 import { CreateDiscordToken1741475841953 } from './migrations/1741475841953-CreateDiscordToken.js';
+import { AddMoreColumnsToDiscordToken1741477548689 } from './migrations/1741477548689-AddMoreColumnsToDiscordToken.js';
 
 @Module({
   imports: [
@@ -37,7 +38,8 @@ import { CreateDiscordToken1741475841953 } from './migrations/1741475841953-Crea
         CreateOAuthStateTable1605167513355,
         RemoveAuthRequest1608128480347,
         AddConsentTime1621007020175,
-        CreateDiscordToken1741475841953
+        CreateDiscordToken1741475841953,
+        AddMoreColumnsToDiscordToken1741477548689
       ],
       migrationsRun: true
     }),
