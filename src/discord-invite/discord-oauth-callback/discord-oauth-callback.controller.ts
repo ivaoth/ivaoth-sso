@@ -24,16 +24,13 @@ export class DiscordOauthCallbackController {
     @Query('code') code: string,
     @Query('state') state: string
   ): Promise<string> {
-    const oauthState = this.oauthStateRepository.findOne({
-      where: {
-        state
-      },
+    const oauthState = await this.oauthStateRepository.findOne({
+      where: { state },
       relations: ['user']
     });
 
-    const user = (await oauthState).user;
-
-    if (await oauthState) {
+    if (oauthState) {
+      const user = oauthState.user;
       const tokenResponse = await this.apiService.getTokens(code);
 
       const discordId = await this.apiService.getDiscordUserIdFromAccessToken(
