@@ -42,17 +42,12 @@ interface DiscordInviteModuleConfig {
   imports: [TypeOrmModule.forFeature([User, OAuthState])]
 })
 export class DiscordInviteModule {
-  static initialise(config: DiscordInviteModuleConfig): DynamicModule {
+  static fromEnv(): DynamicModule {
+    const config = this.getConfigFromEnv();
     return {
       module: DiscordInviteModule,
-      imports: [TypeOrmModule.forFeature([User, OAuthState])],
       providers: [
-        DiscordApiService,
-        UtilitiesService,
-        {
-          provide: 'DISCORD_CLIENT_ID',
-          useValue: config.discordClientId
-        },
+        { provide: 'DISCORD_CLIENT_ID', useValue: config.discordClientId },
         {
           provide: 'DISCORD_CLIENT_SECRET',
           useValue: config.discordClientSecret
@@ -61,14 +56,8 @@ export class DiscordInviteModule {
           provide: 'DISCORD_CALLBACK_URI',
           useValue: config.discordCallbackUri
         },
-        {
-          provide: 'DISCORD_GUILD_ID',
-          useValue: config.discordGuildId
-        },
-        {
-          provide: 'DISCORD_BOT_TOKEN',
-          useValue: config.discordBotToken
-        },
+        { provide: 'DISCORD_GUILD_ID', useValue: config.discordGuildId },
+        { provide: 'DISCORD_BOT_TOKEN', useValue: config.discordBotToken },
         {
           provide: 'DISCORD_THIS_DIVISION_ROLE',
           useValue: config.discordThisDivisionRole
@@ -93,18 +82,9 @@ export class DiscordInviteModule {
           provide: 'DISCORD_VERIFIED_USER_ROLE',
           useValue: config.discordVerifiedUserRole
         },
-        {
-          provide: 'THIS_DIVISION',
-          useValue: config.thisDivision
-        },
-        {
-          provide: 'THIS_DIVISION_FIRS',
-          useValue: config.thisDivisionFirs
-        },
-        {
-          provide: 'DISCORD_BOT_ROLE',
-          useValue: config.discordBotRole
-        },
+        { provide: 'THIS_DIVISION', useValue: config.thisDivision },
+        { provide: 'THIS_DIVISION_FIRS', useValue: config.thisDivisionFirs },
+        { provide: 'DISCORD_BOT_ROLE', useValue: config.discordBotRole },
         {
           provide: 'DISCORD_UNVERIFIED_USER_ROLE',
           useValue: config.discordUnverifiedUserRole
@@ -117,8 +97,69 @@ export class DiscordInviteModule {
           provide: 'DISCORD_MANAGED_ROLES',
           useValue: config.discordManagedRoles
         }
-      ],
-      controllers: [IvaoLoginController, DiscordOauthCallbackController]
+      ]
     };
+  }
+
+  static getConfigFromEnv(): DiscordInviteModuleConfig {
+    const discordBotToken = process.env['DISCORD_BOT_TOKEN'];
+    const discordCallbackUri = process.env['DISCORD_CALLBACK_URI'];
+    const discordClientId = process.env['DISCORD_CLIENT_ID'];
+    const discordClientSecret = process.env['DISCORD_CLIENT_SECRET'];
+    const discordGuildId = process.env['DISCORD_GUILD_ID'];
+    const discordHQStaffRole = process.env['DISCORD_HQ_STAFF_ROLE'];
+    const discordOtherDivisionRole = process.env['DISCORD_OTHER_DIVISION_ROLE'];
+    const discordOtherDivisionStaffRole =
+      process.env['DISCORD_OTHER_DIVISION_STAFF_ROLE'];
+    const discordThisDivisionRole = process.env['DISCORD_THIS_DIVISION_ROLE'];
+    const discordThisDivisionStaffRole =
+      process.env['DISCORD_THIS_DIVISION_STAFF_ROLE'];
+    const discordVerifiedUserRole = process.env['DISCORD_VERIFIED_USER_ROLE'];
+    const thisDivision = process.env['THIS_DIVISION'];
+    const thisDivisionFirs = process.env['THIS_DIVISION_FIRS'];
+    const discordBotRole = process.env['DISCORD_BOT_ROLE'];
+    const discordUnverifiedUserRole =
+      process.env['DISCORD_UNVERIFIED_USER_ROLE'];
+    const discordUnconsentedRole = process.env['DISCORD_UNCONSENTED_ROLE'];
+    const discordManagedRoles = process.env['DISCORD_MANAGED_ROLES'];
+    if (
+      discordClientId &&
+      discordClientSecret &&
+      discordCallbackUri &&
+      discordGuildId &&
+      discordBotToken &&
+      discordThisDivisionRole &&
+      discordOtherDivisionRole &&
+      discordThisDivisionStaffRole &&
+      discordOtherDivisionStaffRole &&
+      discordHQStaffRole &&
+      discordVerifiedUserRole &&
+      thisDivision &&
+      thisDivisionFirs &&
+      discordBotRole &&
+      discordUnverifiedUserRole &&
+      discordUnconsentedRole &&
+      discordManagedRoles
+    )
+      return {
+        discordClientId,
+        discordClientSecret,
+        discordCallbackUri,
+        discordGuildId,
+        discordBotToken,
+        discordThisDivisionRole,
+        discordOtherDivisionRole,
+        discordThisDivisionStaffRole,
+        discordOtherDivisionStaffRole,
+        discordHQStaffRole,
+        discordVerifiedUserRole,
+        thisDivision,
+        thisDivisionFirs: thisDivisionFirs.split(':'),
+        discordBotRole,
+        discordUnverifiedUserRole,
+        discordUnconsentedRole,
+        discordManagedRoles: discordManagedRoles.split(':')
+      };
+    else throw new Error('Misconfigured environment');
   }
 }

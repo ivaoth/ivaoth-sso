@@ -41,34 +41,14 @@ import { AddConsentTime1621007020175 } from './migrations/1621007020175-AddConse
       migrationsRun: true
     }),
     TypeOrmModule.forFeature([User, Admin, OAuthState]),
-    DiscordInviteModule.initialise({
-      discordBotToken: process.env['DISCORD_BOT_TOKEN'],
-      discordCallbackUri: process.env['DISCORD_CALLBACK_URI'],
-      discordClientId: process.env['DISCORD_CLIENT_ID'],
-      discordClientSecret: process.env['DISCORD_CLIENT_SECRET'],
-      discordGuildId: process.env['DISCORD_GUILD_ID'],
-      discordHQStaffRole: process.env['DISCORD_HQ_STAFF_ROLE'],
-      discordOtherDivisionRole: process.env['DISCORD_OTHER_DIVISION_ROLE'],
-      discordOtherDivisionStaffRole:
-        process.env['DISCORD_OTHER_DIVISION_STAFF_ROLE'],
-      discordThisDivisionRole: process.env['DISCORD_THIS_DIVISION_ROLE'],
-      discordThisDivisionStaffRole:
-        process.env['DISCORD_THIS_DIVISION_STAFF_ROLE'],
-      discordVerifiedUserRole: process.env['DISCORD_VERIFIED_USER_ROLE'],
-      thisDivision: process.env['THIS_DIVISION'],
-      thisDivisionFirs: process.env['THIS_DIVISION_FIRS'].split(':'),
-      discordBotRole: process.env['DISCORD_BOT_ROLE'],
-      discordUnverifiedUserRole: process.env['DISCORD_UNVERIFIED_USER_ROLE'],
-      discordUnconsentedRole: process.env['DISCORD_UNCONSENTED_ROLE'],
-      discordManagedRoles: process.env['DISCORD_MANAGED_ROLES'].split(':')
-    })
+    DiscordInviteModule.fromEnv()
   ],
   controllers: [AppController],
   providers: []
 })
 export class AppModule implements NestModule {
-  configure(consumer: MiddlewareConsumer): void | MiddlewareConsumer {
-    consumer
+  configure(consumer: MiddlewareConsumer): MiddlewareConsumer {
+    return consumer
       .apply(APIKeyMiddleware)
       .exclude('discord', 'discord-invite', 'discord-callback', 'ping')
       .forRoutes(AppController);
