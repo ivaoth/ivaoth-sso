@@ -13,10 +13,12 @@ import {
   InteractionType,
   InteractionResponseType,
   APIInteractionResponse,
-  MessageFlags
+  MessageFlags,
+  ApplicationCommandType
 } from 'discord-api-types/v10';
 import { Request as ExpressRequest } from 'express';
 import libsodium from 'libsodium-wrappers';
+import { stripIndents } from 'common-tags';
 
 @Controller('discord/interaction')
 export class InteractionController {
@@ -40,6 +42,12 @@ export class InteractionController {
         return {
           type: InteractionResponseType.Pong
         };
+      } else if (interaction.type === InteractionType.ApplicationCommand) {
+        if (interaction.data.type === ApplicationCommandType.ChatInput) {
+          if (interaction.data.name === 'verify') {
+            return this.handleVerifyCommand();
+          }
+        }
       }
       return {
         type: InteractionResponseType.ChannelMessageWithSource,
@@ -51,5 +59,19 @@ export class InteractionController {
     } else {
       throw UnauthorizedException;
     }
+  }
+
+  handleVerifyCommand(): APIInteractionResponse {
+    return {
+      type: InteractionResponseType.ChannelMessageWithSource,
+      data: {
+        content: stripIndents`
+          กรุณาคลิกที่ link ด้านล่างนี้ เพื่อเชื่อมต่อ IVAO Account ของคุณ กับ Discord
+      
+          Please click the link below to link your VID with Discord.
+      
+          https://l.th.ivao.aero/discordInvite`
+      }
+    };
   }
 }
