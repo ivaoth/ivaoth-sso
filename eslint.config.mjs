@@ -23,6 +23,12 @@ export default tseslint.config(
         {
           allowWithDecorator: true
         }
+      ],
+      '@typescript-eslint/no-unused-vars': [
+        'error',
+        {
+          caughtErrors: 'none'
+        }
       ]
     }
   },
