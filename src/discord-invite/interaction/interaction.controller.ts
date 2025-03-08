@@ -31,9 +31,9 @@ export class InteractionController {
   ): APIInteractionResponse {
     if (
       libsodium.crypto_sign_verify_detached(
-        Buffer.from(signature, 'utf8'),
+        Buffer.from(signature, 'hex'),
         Buffer.concat([Buffer.from(timestamp, 'utf8'), request.rawBody || Buffer.from([])]),
-        Buffer.from(this.publicKey, 'utf8')
+        Buffer.from(this.publicKey, 'hex')
       )
     ) {
       if (interaction.type === InteractionType.Ping) {
