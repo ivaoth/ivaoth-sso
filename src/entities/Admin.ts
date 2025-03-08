@@ -3,7 +3,7 @@ import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 @Entity('admin')
 export class Admin {
   @PrimaryGeneratedColumn()
-  id: number;
+  id!: number;
   @Column()
-  discord_id: string;
+  discord_id!: string;
 }

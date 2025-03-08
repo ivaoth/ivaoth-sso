@@ -4,46 +4,46 @@ import { OAuthState } from './OAuthState';
 @Entity('user')
 export class User {
   @PrimaryGeneratedColumn()
-  id: number;
+  id!: number;
 
   @Column()
-  discord_id: string;
+  discord_id!: string;
 
   @Column()
-  vid: string;
+  vid!: string;
 
   @Column()
-  firstname: string;
+  firstname!: string;
 
   @Column()
-  lastname: string;
+  lastname!: string;
 
   @Column()
-  rating: number;
+  rating!: number;
 
   @Column()
-  ratingatc: number;
+  ratingatc!: number;
 
   @Column()
-  ratingpilot: number;
+  ratingpilot!: number;
 
   @Column()
-  division: string;
+  division!: string;
 
   @Column()
-  country: string;
+  country!: string;
 
   @Column()
-  staff: string;
+  staff!: string;
 
   @Column()
-  customNickname: string;
+  customNickname!: string;
 
   @Column({
     nullable: true
   })
-  consentTime: Date | null;
+  consentTime!: Date | null;
 
   @OneToMany(() => OAuthState, (state) => state.user)
-  oauthStates: OAuthState[];
+  oauthStates!: OAuthState[];
 }

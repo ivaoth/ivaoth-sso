@@ -11,15 +11,15 @@ import { User } from './User';
 @Entity('oauth_state')
 export class OAuthState {
   @PrimaryGeneratedColumn()
-  id: number;
+  id!: number;
 
   @Column()
   @Index()
-  state: string;
+  state!: string;
 
   @ManyToOne(() => User, (user) => user.oauthStates)
   @JoinColumn({
     name: 'userId'
   })
-  user: User;
+  user!: User;
 }
