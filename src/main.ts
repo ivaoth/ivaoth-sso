@@ -38,7 +38,8 @@ async function bootstrap(): Promise<void> {
         })
       ],
       exitOnError: false
-    })
+    }),
+    rawBody: true
   });
   app.useStaticAssets(resolve(__dirname, '..', 'public'));
   app.setBaseViewsDir(resolve(__dirname, 'views'));
