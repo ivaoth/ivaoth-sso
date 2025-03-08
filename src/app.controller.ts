@@ -12,22 +12,14 @@ export class AppController {
   ) {}
 
   @Get('getUser')
-  async getUser(@Query('discord_id') discord_id: string): Promise<
-    | {
-        success: false;
-      }
-    | ({ success: true } & User)
-  > {
-    const user = this.userRepo.findOne({ where: { discord_id } });
-    if (await user) {
-      return {
-        success: true,
-        ...(await user)
-      };
+  async getUser(
+    @Query('discord_id') discord_id: string
+  ): Promise<{ success: false } | { success: true; user: User }> {
+    const user = await this.userRepo.findOne({ where: { discord_id } });
+    if (user) {
+      return { success: true, user };
     } else {
-      return {
-        success: false
-      };
+      return { success: false };
     }
   }
 
@@ -50,13 +42,9 @@ export class AppController {
   ): Promise<{ isAdmin: boolean }> {
     const admin = this.adminRepo.findOne({ where: { discord_id } });
     if (await admin) {
-      return {
-        isAdmin: true
-      };
+      return { isAdmin: true };
     } else {
-      return {
-        isAdmin: false
-      };
+      return { isAdmin: false };
     }
   }
 
@@ -65,7 +53,7 @@ export class AppController {
    * @returns pong
    */
   @Get('ping')
-  async ping() {
-    return `pong at ${new Date()}`;
+  ping() {
+    return `pong at ${new Date().toString()}`;
   }
 }
