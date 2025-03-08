@@ -1,6 +1,7 @@
 //@ts-check
 
 import eslint from '@eslint/js';
+import { globalIgnores } from 'eslint/config';
 import tseslint from 'typescript-eslint';
 import eslintPluginPrettier from 'eslint-plugin-prettier/recommended';
 
@@ -32,5 +33,6 @@ export default tseslint.config(
       ]
     }
   },
+  globalIgnores(['dist/*']),
   eslintPluginPrettier
 );
