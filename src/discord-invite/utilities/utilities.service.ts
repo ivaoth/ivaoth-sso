@@ -96,26 +96,21 @@ export class UtilitiesService {
           user.division === this.thisDivision ? '' : ` - ${user.division}`;
 
         const baseName = (
-          user.customNickname
-            ? user.customNickname
-            : `${titleCase(user.firstname)}`
-        ).substr(0, 32 - prefix.length - suffix.length);
+          user.customNickname ? user.customNickname : titleCase(user.firstname)
+        ).substring(0, 32 - prefix.length - suffix.length);
         return prefix + baseName + suffix;
       } else {
-        return `[UNCONSENTED] ${discordUsername}`.substr(0, 32);
+        return `[UNCONSENTED] ${discordUsername}`.substring(0, 32);
       }
     } else {
-      return `[UNVERIFIED] ${discordUsername}`.substr(0, 32);
+      return `[UNVERIFIED] ${discordUsername}`.substring(0, 32);
     }
   }
 
   async getDiscordOauthUrl(user: User) {
     const key = uuidv4();
 
-    const state = this.oauthStateRepository.create({
-      state: key,
-      user
-    });
+    const state = this.oauthStateRepository.create({ state: key, user });
     await this.oauthStateRepository.save(state);
 
     const authorizeUrl = new URL('https://discord.com/api/oauth2/authorize');
