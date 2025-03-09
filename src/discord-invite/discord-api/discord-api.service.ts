@@ -145,6 +145,7 @@ export class DiscordApiService {
 
   async updateMetadata(user: User): Promise<void> {
     const token = await this.utils.getDiscordAccessTokens(user);
+    this.logger.log(token);
     const tempRest = new REST({ version: '10' }).setToken(token);
     const body: RESTPutAPICurrentUserApplicationRoleConnectionJSONBody = {
       platform_name: 'IVAO',
