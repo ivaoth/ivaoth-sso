@@ -31,6 +31,7 @@
     "axios": "1.8.2",
     "common-tags": "1.8.2",
     "discord-api-types": "0.37.119",
+    "dotenv": "16.4.7",
     "ejs": "3.1.10",
     "libsodium-wrappers": "0.7.15",
     "mysql2": "3.13.0",
