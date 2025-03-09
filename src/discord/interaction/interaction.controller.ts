@@ -16,12 +16,14 @@ import { stripIndents } from 'common-tags';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Admin } from '../../entities/Admin.js';
 import { Repository } from 'typeorm';
+import { DiscordApiService } from '../discord-api/discord-api.service.js';
 
 @Controller('discord/interaction')
 export class InteractionController {
   constructor(
     @Inject('DISCORD_BOT_PUBLIC_KEY') private publicKey: string,
-    @InjectRepository(Admin) private adminRepository: Repository<Admin>
+    @InjectRepository(Admin) private adminRepository: Repository<Admin>,
+    private discordApiService: DiscordApiService
   ) {}
 
   @Post()
@@ -50,6 +52,14 @@ export class InteractionController {
             } else if (interaction.data.name === 'broadcast') {
               return this.handleBroadcastCommand(interaction);
             }
+          }
+        }
+      } else if (interaction.type === DiscordTypes.InteractionType.ModalSubmit) {
+        if (DiscordTypeUtils.isGuildInteraction(interaction)) {
+          const custom_id = interaction.data.custom_id;
+          const parameters = custom_id.split('$');
+          if (parameters[0] === 'broadcastData') {
+            return this.handleBroadcastDataModalSubmit(interaction);
           }
         }
       }
@@ -97,7 +107,7 @@ export class InteractionController {
             type: DiscordTypes.InteractionResponseType.Modal,
             data: {
               title: 'Broadcast a message',
-              custom_id: channel_id.value,
+              custom_id: `broadcastData$${channel_id.value}`,
               components: [
                 {
                   type: DiscordTypes.ComponentType.ActionRow,
@@ -118,6 +128,25 @@ export class InteractionController {
         }
       }
       return this.generateErrorTextInteractionResponse('Error: malformed interaction');
+    }
+    return this.generateErrorTextInteractionResponse('Error: you are not allow to execute this command');
+  }
+
+  private async handleBroadcastDataModalSubmit(
+    interaction: DiscordTypes.APIModalSubmitGuildInteraction
+  ): Promise<DiscordTypes.APIInteractionResponse> {
+    const user = interaction.member;
+    if (await this.isAdmin(user.user.id)) {
+      const channel_id = interaction.data.custom_id.split('$')[1];
+      const message = interaction.data.components[0].components[0].value;
+      await this.discordApiService.postMessage(channel_id, message);
+      return {
+        type: DiscordTypes.InteractionResponseType.ChannelMessageWithSource,
+        data: {
+          content: 'Message published',
+          flags: DiscordTypes.MessageFlags.Ephemeral
+        }
+      };
     }
     return this.generateErrorTextInteractionResponse('Error: you are not allow to execute this command');
   }
