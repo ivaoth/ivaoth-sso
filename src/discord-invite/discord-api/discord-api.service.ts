@@ -1,5 +1,5 @@
 import { REST } from '@discordjs/rest';
-import { Inject, Injectable, Logger } from '@nestjs/common';
+import { forwardRef, Inject, Injectable, Logger } from '@nestjs/common';
 import axios from 'axios';
 import {
   RESTGetAPICurrentUserResult,
@@ -7,12 +7,15 @@ import {
   RESTGetAPIGuildMembersResult,
   RESTPatchAPIGuildMemberJSONBody,
   RESTPostOAuth2AccessTokenURLEncodedData,
+  RESTPostOAuth2RefreshTokenURLEncodedData,
+  RESTPostOAuth2RefreshTokenResult,
+  RESTPostOAuth2AccessTokenResult,
   RESTPutAPIGuildMemberJSONBody,
-  Routes
+  Routes,
+  RESTPutAPICurrentUserApplicationRoleConnectionJSONBody
 } from 'discord-api-types/v10';
 import qs from 'qs';
 import { User } from '../../entities/User.js';
-import { TokenData } from '../../interfaces';
 import { UtilitiesService } from '../utilities/utilities.service.js';
 
 @Injectable()
@@ -22,7 +25,7 @@ export class DiscordApiService {
   private cachedAllMembers: RESTGetAPIGuildMembersResult = [];
 
   constructor(
-    private utils: UtilitiesService,
+    @Inject(forwardRef(() => UtilitiesService)) private utils: UtilitiesService,
     @Inject('DISCORD_CLIENT_ID') private discordClientId: string,
     @Inject('DISCORD_CLIENT_SECRET') private discordClientSecret: string,
     @Inject('DISCORD_CALLBACK_URI') private discordCallbackUri: string,
@@ -49,7 +52,7 @@ export class DiscordApiService {
     ).id;
   }
 
-  async getTokens(code: string): Promise<TokenData> {
+  async getTokens(code: string): Promise<RESTPostOAuth2AccessTokenResult> {
     const tokenUrl = 'https://discord.com/api/oauth2/token';
     const tokenData: RESTPostOAuth2AccessTokenURLEncodedData = {
       client_id: this.discordClientId,
@@ -59,7 +62,25 @@ export class DiscordApiService {
       redirect_uri: this.discordCallbackUri
     };
     const tokenResponse = (
-      await axios.post<TokenData>(tokenUrl, qs.stringify(tokenData), {
+      await axios.post<RESTPostOAuth2AccessTokenResult>(tokenUrl, qs.stringify(tokenData), {
+        headers: {
+          'content-type': 'application/x-www-form-urlencoded;charset=utf-8'
+        }
+      })
+    ).data;
+    return tokenResponse;
+  }
+
+  async refreshTokens(refresh_token: string): Promise<RESTPostOAuth2RefreshTokenResult> {
+    const tokenUrl = 'https://discord.com/api/oauth2/token';
+    const tokenData: RESTPostOAuth2RefreshTokenURLEncodedData = {
+      grant_type: 'refresh_token',
+      refresh_token,
+      client_id: this.discordClientId,
+      client_secret: this.discordClientSecret
+    };
+    const tokenResponse = (
+      await axios.post<RESTPostOAuth2RefreshTokenResult>(tokenUrl, qs.stringify(tokenData), {
         headers: {
           'content-type': 'application/x-www-form-urlencoded;charset=utf-8'
         }
@@ -76,7 +97,7 @@ export class DiscordApiService {
     }
   }
 
-  async joinUserToGuild(discordId: string, tokenResponse: TokenData, user: User): Promise<void> {
+  async joinUserToGuild(discordId: string, tokenResponse: RESTPostOAuth2AccessTokenResult, user: User): Promise<void> {
     await this.rest.put(Routes.guildMember(this.discordGuildId, discordId), {
       body: {
         access_token: tokenResponse.access_token,
@@ -90,7 +111,7 @@ export class DiscordApiService {
     await this.rest.get(Routes.guildMember(this.discordGuildId, discordId));
   }
 
-  async updateUser(discordUserId: string, userData: User | null, useCachedData = false): Promise<void> {
+  async updateUser(discordUserId: string, userData: User, useCachedData = false): Promise<void> {
     const member = useCachedData
       ? this.cachedAllMembers.find((m) => m.user.id === discordUserId)
       : ((await this.rest.get(Routes.guildMember(this.discordGuildId, discordUserId))) as RESTGetAPIGuildMemberResult);
@@ -118,6 +139,18 @@ export class DiscordApiService {
         }
       }
     }
+    await this.updateMetadata(userData);
+  }
+
+  async updateMetadata(user: User): Promise<void> {
+    const token = await this.utils.getDiscordAccessTokens(user);
+    const tempRest = new REST({ version: '10' }).setToken(token);
+    const body: RESTPutAPICurrentUserApplicationRoleConnectionJSONBody = {
+      platform_name: 'IVAO',
+      platform_username: user.vid,
+      metadata: this.utils.calculateMetadata(user)
+    };
+    await tempRest.put(Routes.userApplicationRoleConnection(this.discordClientId), { body });
   }
 
   async getAllMembersId(force = false): Promise<string[]> {

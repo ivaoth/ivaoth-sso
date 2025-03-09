@@ -1,4 +1,4 @@
-export interface DiscordConnectionMetadata {
-  is_this_division: boolean;
-  is_this_division_staff: boolean;
-}
+export type DiscordConnectionMetadata = {
+  is_this_division: number;
+  is_this_division_staff: number;
+};

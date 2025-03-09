@@ -17,7 +17,9 @@ export class UpdateMemberController {
     const user = await this.userRepository.findOne({
       where: { discord_id: discordUserId }
     });
-    await this.discordApiService.updateUser(discordUserId, user);
+    if (user) {
+      await this.discordApiService.updateUser(discordUserId, user);
+    }
   }
 
   @Post('all')
@@ -28,7 +30,9 @@ export class UpdateMemberController {
         const userData = await this.userRepository.findOne({
           where: { discord_id: member }
         });
-        await this.discordApiService.updateUser(member, userData, true);
+        if (userData) {
+          await this.discordApiService.updateUser(member, userData, true);
+        }
       })
     );
   }

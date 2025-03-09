@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { titleCase } from 'title-case';
 import { Repository } from 'typeorm';
@@ -6,6 +6,8 @@ import { v4 as uuidv4 } from 'uuid';
 import { OAuthState } from '../../entities/OAuthState.js';
 import { User } from '../../entities/User.js';
 import { DiscordConnectionMetadata } from '../../interfaces/discord-connection-metadata.js';
+import { DiscordToken } from '../../entities/DiscordToken.js';
+import { DiscordApiService } from '../discord-api/discord-api.service.js';
 
 @Injectable()
 export class UtilitiesService {
@@ -30,7 +32,9 @@ export class UtilitiesService {
     @InjectRepository(OAuthState)
     private oauthStateRepository: Repository<OAuthState>,
     @Inject('DISCORD_CLIENT_ID') private discordClientId: string,
-    @Inject('DISCORD_CALLBACK_URI') private discordCallbackUri: string
+    @Inject('DISCORD_CALLBACK_URI') private discordCallbackUri: string,
+    @InjectRepository(DiscordToken) private discordTokenRepository: Repository<DiscordToken>,
+    @Inject(forwardRef(() => DiscordApiService)) private discordApiService: DiscordApiService
   ) {}
 
   calculateRoles(user: User | null): string[] {
@@ -69,13 +73,13 @@ export class UtilitiesService {
 
   calculateMetadata(user: User | null): DiscordConnectionMetadata {
     const metadata: DiscordConnectionMetadata = {
-      is_this_division: false,
-      is_this_division_staff: false
+      is_this_division: 0,
+      is_this_division_staff: 0
     };
     if (user) {
       if (user.consentTime) {
         if (user.division === this.thisDivision) {
-          metadata.is_this_division = true;
+          metadata.is_this_division = 1;
         }
         if (user.staff) {
           const positions = user.staff.split(':').map((s) => s.trim());
@@ -83,7 +87,7 @@ export class UtilitiesService {
             if (position.includes('-')) {
               const firstPart = position.split('-')[0];
               if (firstPart === this.thisDivision || this.thisDivisionFirs.includes(firstPart)) {
-                metadata.is_this_division_staff = true;
+                metadata.is_this_division_staff = 1;
               }
             }
           }
@@ -138,5 +142,25 @@ export class UtilitiesService {
     authorizeUrl.searchParams.set('redirect_uri', this.discordCallbackUri);
     authorizeUrl.searchParams.set('state', key);
     return authorizeUrl.href;
+  }
+
+  async getDiscordAccessTokens(user: User) {
+    const discordToken = await this.discordTokenRepository.findOne({
+      where: {
+        user
+      }
+    });
+    if (discordToken) {
+      if (discordToken.expires_at < new Date()) {
+        const refreshedTokens = await this.discordApiService.refreshTokens(discordToken.refresh_token);
+        discordToken.access_token = refreshedTokens.access_token;
+        discordToken.expires_at = new Date(Date.now() + refreshedTokens.expires_in * 1000);
+        await this.discordTokenRepository.save(discordToken);
+        return discordToken.access_token;
+      } else {
+        return discordToken.access_token;
+      }
+    }
+    return '';
   }
 }

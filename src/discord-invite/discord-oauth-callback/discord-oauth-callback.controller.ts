@@ -34,7 +34,7 @@ export class DiscordOauthCallbackController {
       const tokenResponse = await this.apiService.getTokens(code);
 
       const discordId = await this.apiService.getDiscordUserIdFromAccessToken(
-        tokenResponse.token_type,
+        tokenResponse.token_type as 'Bot' | 'Bearer',
         tokenResponse.access_token
       );
 
@@ -69,6 +69,7 @@ export class DiscordOauthCallbackController {
       if (await this.apiService.isUserInGuild(discordId)) {
         await this.apiService.updateUser(discordId, user);
       } else {
+        await this.apiService.updateMetadata(user);
         await this.apiService.joinUserToGuild(discordId, tokenResponse, user);
       }
 
