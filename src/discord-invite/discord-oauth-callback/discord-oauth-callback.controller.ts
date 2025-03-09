@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { OAuthState } from '../../entities/OAuthState.js';
 import { User } from '../../entities/User.js';
 import { DiscordApiService } from '../discord-api/discord-api.service.js';
+import { DiscordToken } from 'src/entities/DiscordToken.js';
 
 @Controller('discord-oauth-callback')
 export class DiscordOauthCallbackController {
@@ -12,7 +13,9 @@ export class DiscordOauthCallbackController {
     private oauthStateRepository: Repository<OAuthState>,
     @InjectRepository(User)
     private userRepository: Repository<User>,
-    private apiService: DiscordApiService
+    private apiService: DiscordApiService,
+    @InjectRepository(DiscordToken)
+    private discordTokenRepository: Repository<DiscordToken>
   ) {}
   /**
    * (New verification flow) This is the URI Callback from Discord OAuth.
@@ -41,6 +44,27 @@ export class DiscordOauthCallbackController {
 
       user.discord_id = discordId;
       await this.userRepository.save(user);
+
+      let discordToken = await this.discordTokenRepository.findOne({
+        where: {
+          user
+        }
+      });
+
+      if (discordToken) {
+        discordToken.access_token = tokenResponse.access_token;
+        discordToken.refresh_token = tokenResponse.refresh_token;
+        discordToken.expires_at = new Date(Date.now() + tokenResponse.expires_in * 1000);
+      } else {
+        discordToken = this.discordTokenRepository.create({
+          access_token: tokenResponse.access_token,
+          refresh_token: tokenResponse.refresh_token,
+          expires_at: new Date(Date.now() + tokenResponse.expires_in * 1000),
+          user
+        });
+      }
+
+      await this.discordTokenRepository.save(discordToken);
 
       if (await this.apiService.isUserInGuild(discordId)) {
         await this.apiService.updateUser(discordId, user);
