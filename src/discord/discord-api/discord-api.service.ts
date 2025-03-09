@@ -188,4 +188,11 @@ export class DiscordApiService {
       return false;
     }
   }
+
+  async postMessage(channel_id: string, message: string) {
+    const body: DiscordTypes.RESTPostAPIChannelMessageJSONBody = {
+      content: message
+    };
+    await this.rest.post(DiscordTypes.Routes.channelMessages(channel_id), { body });
+  }
 }
