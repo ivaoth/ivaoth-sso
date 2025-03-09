@@ -13,19 +13,15 @@ import * as DiscordTypeUtils from 'discord-api-types/utils/v10';
 import { Request as ExpressRequest } from 'express';
 import libsodium from 'libsodium-wrappers';
 import { stripIndents } from 'common-tags';
-import { UtilitiesService } from '../utilities/utilities.service';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Admin } from '../../entities/Admin';
+import { Admin } from '../../entities/Admin.js';
 import { Repository } from 'typeorm';
-import { DiscordApiService } from '../discord-api/discord-api.service';
 
 @Controller('discord/interaction')
 export class InteractionController {
   constructor(
     @Inject('DISCORD_BOT_PUBLIC_KEY') private publicKey: string,
-    private utils: UtilitiesService,
-    @InjectRepository(Admin) private adminRepository: Repository<Admin>,
-    private discord: DiscordApiService
+    @InjectRepository(Admin) private adminRepository: Repository<Admin>
   ) {}
 
   @Post()
