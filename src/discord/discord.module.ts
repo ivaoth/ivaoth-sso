@@ -12,7 +12,7 @@ import { SubmitConsentController } from './submit-consent/submit-consent.control
 import { InteractionController } from './interaction/interaction.controller.js';
 import { DiscordToken } from '../entities/DiscordToken.js';
 
-interface DiscordInviteModuleConfig {
+interface DiscordModuleConfig {
   discordClientId: string;
   discordClientSecret: string;
   discordCallbackUri: string;
@@ -45,11 +45,11 @@ interface DiscordInviteModuleConfig {
   providers: [DiscordApiService, UtilitiesService],
   imports: [TypeOrmModule.forFeature([User, OAuthState, DiscordToken])]
 })
-export class DiscordInviteModule {
+export class DiscordModule {
   static fromEnv(): DynamicModule {
     const config = this.getConfigFromEnv();
     return {
-      module: DiscordInviteModule,
+      module: DiscordModule,
       providers: [
         { provide: 'DISCORD_CLIENT_ID', useValue: config.discordClientId },
         {
@@ -109,7 +109,7 @@ export class DiscordInviteModule {
     };
   }
 
-  static getConfigFromEnv(): DiscordInviteModuleConfig {
+  static getConfigFromEnv(): DiscordModuleConfig {
     const discordBotToken = process.env['DISCORD_BOT_TOKEN'];
     const discordCallbackUri = process.env['DISCORD_CALLBACK_URI'];
     const discordClientId = process.env['DISCORD_CLIENT_ID'];

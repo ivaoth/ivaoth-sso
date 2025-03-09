@@ -3,7 +3,7 @@ import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { resolve } from 'path';
 import { AppController } from './app.controller.js';
-import { DiscordInviteModule } from './discord-invite/discord-invite.module.js';
+import { DiscordModule } from './discord/discord.module.js';
 import { Admin } from './entities/Admin.js';
 import { OAuthState } from './entities/OAuthState.js';
 import { User } from './entities/User.js';
@@ -44,7 +44,7 @@ import { AddMoreColumnsToDiscordToken1741477548689 } from './migrations/17414775
       migrationsRun: true
     }),
     TypeOrmModule.forFeature([User, Admin, OAuthState, DiscordToken]),
-    DiscordInviteModule.fromEnv()
+    DiscordModule.fromEnv()
   ],
   controllers: [AppController],
   providers: []
