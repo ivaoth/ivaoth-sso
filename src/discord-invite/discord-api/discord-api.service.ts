@@ -17,6 +17,7 @@ import {
 import qs from 'qs';
 import { User } from '../../entities/User.js';
 import { UtilitiesService } from '../utilities/utilities.service.js';
+import { WrapperType } from '../../interfaces/wrapper-type.js';
 
 @Injectable()
 export class DiscordApiService {
@@ -25,7 +26,7 @@ export class DiscordApiService {
   private cachedAllMembers: RESTGetAPIGuildMembersResult = [];
 
   constructor(
-    @Inject(forwardRef(() => UtilitiesService)) private utils: UtilitiesService,
+    @Inject(forwardRef(() => UtilitiesService)) private utils: WrapperType<UtilitiesService>,
     @Inject('DISCORD_CLIENT_ID') private discordClientId: string,
     @Inject('DISCORD_CLIENT_SECRET') private discordClientSecret: string,
     @Inject('DISCORD_CALLBACK_URI') private discordCallbackUri: string,

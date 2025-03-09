@@ -8,6 +8,7 @@ import { User } from '../../entities/User.js';
 import { DiscordConnectionMetadata } from '../../interfaces/discord-connection-metadata.js';
 import { DiscordToken } from '../../entities/DiscordToken.js';
 import { DiscordApiService } from '../discord-api/discord-api.service.js';
+import { WrapperType } from '../../interfaces/wrapper-type.js';
 
 @Injectable()
 export class UtilitiesService {
@@ -34,7 +35,7 @@ export class UtilitiesService {
     @Inject('DISCORD_CLIENT_ID') private discordClientId: string,
     @Inject('DISCORD_CALLBACK_URI') private discordCallbackUri: string,
     @InjectRepository(DiscordToken) private discordTokenRepository: Repository<DiscordToken>,
-    @Inject(forwardRef(() => DiscordApiService)) private discordApiService: DiscordApiService
+    @Inject(forwardRef(() => DiscordApiService)) private discordApiService: WrapperType<DiscordApiService>
   ) {}
 
   calculateRoles(user: User | null): string[] {
