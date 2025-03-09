@@ -43,7 +43,7 @@ import { AddMoreColumnsToDiscordToken1741477548689 } from './migrations/17414775
       ],
       migrationsRun: true
     }),
-    TypeOrmModule.forFeature([User, Admin, OAuthState]),
+    TypeOrmModule.forFeature([User, Admin, OAuthState, DiscordToken]),
     DiscordInviteModule.fromEnv()
   ],
   controllers: [AppController],
