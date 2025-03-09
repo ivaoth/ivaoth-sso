@@ -41,7 +41,7 @@ export class DiscordApiService {
    * @experimental
    */
   async getDiscordUserIdFromAccessToken(token_type: 'Bot' | 'Bearer', access_token: string): Promise<string> {
-    const tempRest = new REST({ version: '9' }).setToken(access_token);
+    const tempRest = new REST({ version: '10' }).setToken(access_token);
     return (
       (await tempRest.get(Routes.user(), {
         authPrefix: token_type
