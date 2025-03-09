@@ -5,6 +5,7 @@ import { Repository } from 'typeorm';
 import { v4 as uuidv4 } from 'uuid';
 import { OAuthState } from '../../entities/OAuthState.js';
 import { User } from '../../entities/User.js';
+import { DiscordConnectionMetadata } from '../../interfaces/discord-connection-metadata.js';
 
 @Injectable()
 export class UtilitiesService {
@@ -64,6 +65,32 @@ export class UtilitiesService {
     } else {
       return [this.discordUnverifiedUserRole];
     }
+  }
+
+  calculateMetadata(user: User | null): DiscordConnectionMetadata {
+    const metadata: DiscordConnectionMetadata = {
+      is_this_division: false,
+      is_this_division_staff: false
+    };
+    if (user) {
+      if (user.consentTime) {
+        if (user.division === this.thisDivision) {
+          metadata.is_this_division = true;
+        }
+        if (user.staff) {
+          const positions = user.staff.split(':').map((s) => s.trim());
+          for (const position of positions) {
+            if (position.includes('-')) {
+              const firstPart = position.split('-')[0];
+              if (firstPart === this.thisDivision || this.thisDivisionFirs.includes(firstPart)) {
+                metadata.is_this_division_staff = true;
+              }
+            }
+          }
+        }
+      }
+    }
+    return metadata;
   }
 
   calculateNickname(user: User | null, discordUsername: string): string {
