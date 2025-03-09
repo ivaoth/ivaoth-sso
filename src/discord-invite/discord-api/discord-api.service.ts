@@ -151,7 +151,7 @@ export class DiscordApiService {
       platform_username: user.vid,
       metadata: this.utils.calculateMetadata(user)
     };
-    await tempRest.put(Routes.userApplicationRoleConnection(this.discordClientId), { body });
+    await tempRest.put(Routes.userApplicationRoleConnection(this.discordClientId), { body, authPrefix: 'Bearer' });
   }
 
   async getAllMembersId(force = false): Promise<string[]> {
