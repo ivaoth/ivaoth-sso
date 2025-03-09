@@ -10,6 +10,7 @@ import { UpdateMemberController } from './update-member/update-member.controller
 import { NicknameUpdateController } from './nickname-update/nickname-update.controller.js';
 import { SubmitConsentController } from './submit-consent/submit-consent.controller.js';
 import { InteractionController } from './interaction/interaction.controller.js';
+import { DiscordToken } from 'src/entities/DiscordToken.js';
 
 interface DiscordInviteModuleConfig {
   discordClientId: string;
@@ -42,7 +43,7 @@ interface DiscordInviteModuleConfig {
     InteractionController
   ],
   providers: [DiscordApiService, UtilitiesService],
-  imports: [TypeOrmModule.forFeature([User, OAuthState])]
+  imports: [TypeOrmModule.forFeature([User, OAuthState, DiscordToken])]
 })
 export class DiscordInviteModule {
   static fromEnv(): DynamicModule {
