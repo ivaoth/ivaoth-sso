@@ -4,7 +4,7 @@ import { Repository } from 'typeorm';
 import { OAuthState } from '../../entities/OAuthState.js';
 import { User } from '../../entities/User.js';
 import { DiscordApiService } from '../discord-api/discord-api.service.js';
-import { DiscordToken } from 'src/entities/DiscordToken.js';
+import { DiscordToken } from '../../entities/DiscordToken.js';
 
 @Controller('discord-oauth-callback')
 export class DiscordOauthCallbackController {
