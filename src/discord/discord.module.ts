@@ -11,6 +11,7 @@ import { NicknameUpdateController } from './nickname-update/nickname-update.cont
 import { SubmitConsentController } from './submit-consent/submit-consent.controller.js';
 import { InteractionController } from './interaction/interaction.controller.js';
 import { DiscordToken } from '../entities/DiscordToken.js';
+import { Admin } from '../entities/Admin.js';
 
 interface DiscordModuleConfig {
   discordClientId: string;
@@ -43,7 +44,7 @@ interface DiscordModuleConfig {
     InteractionController
   ],
   providers: [DiscordApiService, UtilitiesService],
-  imports: [TypeOrmModule.forFeature([User, OAuthState, DiscordToken])]
+  imports: [TypeOrmModule.forFeature([User, OAuthState, DiscordToken, Admin])]
 })
 export class DiscordModule {
   static fromEnv(): DynamicModule {
