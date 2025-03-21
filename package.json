@@ -23,10 +23,10 @@
   },
   "dependencies": {
     "@discordjs/rest": "2.4.3",
-    "@nestjs/common": "11.0.11",
+    "@nestjs/common": "11.0.12",
     "@nestjs/config": "4.0.1",
-    "@nestjs/core": "11.0.11",
-    "@nestjs/platform-express": "11.0.11",
+    "@nestjs/core": "11.0.12",
+    "@nestjs/platform-express": "11.0.12",
     "@nestjs/typeorm": "11.0.0",
     "axios": "1.8.2",
     "common-tags": "1.8.2",
@@ -48,7 +48,7 @@
   "devDependencies": {
     "@nestjs/cli": "11.0.5",
     "@nestjs/schematics": "11.0.2",
-    "@nestjs/testing": "11.0.11",
+    "@nestjs/testing": "11.0.12",
     "@types/common-tags": "1.8.4",
     "@types/csurf": "1.11.5",
     "@types/ejs": "3.1.5",
