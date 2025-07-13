@@ -56,7 +56,7 @@
     "@types/jest": "30.0.0",
     "@types/libsodium-wrappers": "0.7.14",
     "@types/node": "22.13.9",
-    "@types/qs": "6.9.18",
+    "@types/qs": "6.14.0",
     "@types/supertest": "6.0.3",
     "@types/uuid": "10.0.0",
     "autoprefixer": "10.4.21",
