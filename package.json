@@ -62,7 +62,7 @@
     "autoprefixer": "10.4.21",
     "eslint": "9.31.0",
     "eslint-config-prettier": "10.1.5",
-    "eslint-plugin-prettier": "5.5.1",
+    "eslint-plugin-prettier": "5.5.5",
     "jest": "30.0.4",
     "nodemon": "3.1.10",
     "postcss": "8.5.6",
