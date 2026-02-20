@@ -30,7 +30,7 @@
     "@nestjs/typeorm": "11.0.0",
     "axios": "1.10.0",
     "common-tags": "1.8.2",
-    "discord-api-types": "0.38.16",
+    "discord-api-types": "0.38.40",
     "dotenv": "17.2.0",
     "ejs": "3.1.10",
     "libsodium-wrappers": "0.7.15",
